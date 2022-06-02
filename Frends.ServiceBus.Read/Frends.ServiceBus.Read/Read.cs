@@ -19,7 +19,7 @@ namespace Frends.ServiceBus.Read;
 public class ServiceBus
 {
     /// <summary>
-    /// Read message from Azure Service Bus queue or subscription.
+    /// Read message from Azure Service Bus queue or topic.
     /// </summary>
     /// <param name="input">Input parameters</param>
     /// <param name="options">Options parameters</param>
@@ -29,7 +29,7 @@ public class ServiceBus
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (options.CreateQueueOrSubscriptionIfItDoesNotExist)
+        if (options.CreateQueueOrTopicIfItDoesNotExist)
         {
             var deleteIdle = TimeSpan.Zero;
 
@@ -48,12 +48,12 @@ public class ServiceBus
 
             switch (input.SourceType)
             {
-                case QueueOrSubscription.Queue:
-                    if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("Queue or topic name and connection string required.");
+                case QueueOrTopic.Queue:
+                    if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("Connection parameters required.");
                     await EnsureQueueExists(input.QueueOrTopicName, input.ConnectionString, deleteIdle, options.MaxSize, cancellationToken);
                     break;
-                case QueueOrSubscription.Subscription:
-                    if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.SubscriptionName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("Queue or topic name, subscription name and connection string required.");
+                case QueueOrTopic.Topic:
+                    if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.SubscriptionName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("Connection parameters required.");
                     await EnsureTopicExists(input.ConnectionString, input.QueueOrTopicName, input.SubscriptionName, deleteIdle, options.MaxSize, cancellationToken);
                     break;
                 default:
@@ -155,7 +155,7 @@ public class ServiceBus
         ServiceBusConnection connection = null;
         MessageReceiver requestClient = null;
 
-        var path = input.SourceType == QueueOrSubscription.Subscription ? $"{input.QueueOrTopicName}/subscriptions/{input.SubscriptionName}" : input.QueueOrTopicName;
+        var path = input.SourceType == QueueOrTopic.Topic ? $"{input.QueueOrTopicName}/subscriptions/{input.SubscriptionName}" : input.QueueOrTopicName;
         var timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
 
         try

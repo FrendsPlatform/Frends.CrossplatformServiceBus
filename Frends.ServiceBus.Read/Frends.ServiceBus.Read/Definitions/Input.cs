@@ -12,8 +12,8 @@ public class Input
     /// Source type.
     /// </summary>
     /// <example>Queue</example>
-    [DefaultValue(QueueOrSubscription.Queue)]
-    public QueueOrSubscription SourceType { get; set; }
+    [DefaultValue(QueueOrTopic.Queue)]
+    public QueueOrTopic SourceType { get; set; }
 
     /// <summary>
     /// The name of the queue or topic.
@@ -26,7 +26,7 @@ public class Input
     /// The name of the subscription
     /// </summary>
     /// <example>SubscriptionName</example>
-    [UIHint(nameof(SourceType), "", QueueOrSubscription.Subscription)]
+    [UIHint(nameof(SourceType), "", QueueOrTopic.Topic)]
     [DisplayFormat(DataFormatString = "Text")]
     public string SubscriptionName { get; set; }
 

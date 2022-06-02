@@ -37,13 +37,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Get an error because queue doesn't exists and CreateQueueOrSubscriptionIfItDoesNotExist = false.
         /// </summary>
         [TestMethod]
-        public void Queue_CreateQueueOrSubscriptionIfItDoesNotExist_False_NoExistsError_Test()
+        public void Queue_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = false,
+                CreateQueueOrTopicIfItDoesNotExist = false,
                 UseCachedConnection = true,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -55,7 +55,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionStringReadOnly,
                 QueueOrTopicName = "DoesntExists",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -67,13 +67,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Get an error because topic doesn't exists and CreateQueueOrSubscriptionIfItDoesNotExist = false.
         /// </summary>
         [TestMethod]
-        public void Topic_CreateQueueOrSubscriptionIfItDoesNotExist_False_NoExistsError_Test()
+        public void Topic_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = false,
+                CreateQueueOrTopicIfItDoesNotExist = false,
                 UseCachedConnection = true,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -85,7 +85,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "DoesntExists",
-                SourceType = QueueOrSubscription.Subscription,
+                SourceType = QueueOrTopic.Topic,
                 SubscriptionName = _subName
             };
             var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
@@ -96,13 +96,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Get an error because subscription doesn't exists and CreateQueueOrSubscriptionIfItDoesNotExist = false.
         /// </summary>
         [TestMethod]
-        public void Subscription_CreateQueueOrSubscriptionIfItDoesNotExist_False_NoExistsError_Test()
+        public void Subscription_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = false,
+                CreateQueueOrTopicIfItDoesNotExist = false,
                 UseCachedConnection = true,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -114,7 +114,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = _topicName,
-                SourceType = QueueOrSubscription.Subscription,
+                SourceType = QueueOrTopic.Topic,
                 SubscriptionName = "DoesntExists"
             };
             var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
@@ -125,14 +125,14 @@ namespace Frends.ServiceBus.Read.Test
         /// Try to create a new queue without correct access policies.
         /// </summary>
         [TestMethod]
-        public void Queue_UTF8_CreateQueueOrSubscriptionIfItDoesNotExist_True_NoAccess_Test()
+        public void Queue_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_NoAccess_Test()
         {
 
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -144,7 +144,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionStringReadOnly,
                 QueueOrTopicName = "GetAnError",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -156,7 +156,7 @@ namespace Frends.ServiceBus.Read.Test
         /// Read message from queue. Checking that content matches with sent message.
         /// </summary>
         [TestMethod]
-        public async Task Queue_UTF8_CreateQueueOrSubscriptionIfItDoesNotExist_False_Read_Test()
+        public async Task Queue_UTF8_CreateQueueOrTopicIfItDoesNotExist_False_Read_Test()
         {
             await Create();
 
@@ -164,7 +164,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = false,
+                CreateQueueOrTopicIfItDoesNotExist = false,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -176,7 +176,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = _queueName,
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -187,10 +187,10 @@ namespace Frends.ServiceBus.Read.Test
         }
 
         /// <summary>
-        /// Read message from Subscription. Checking that content matches with sent message.
+        /// Read message from Topic. Checking that content matches with sent message.
         /// </summary>
         [TestMethod]
-        public async Task Subscription_UTF8_CreateQueueOrSubscriptionIfItDoesNotExist_False_Read_Test()
+        public async Task Subscription_UTF8_CreateQueueOrTopicIfItDoesNotExist_False_Read_Test()
         {
             await Create();
 
@@ -198,7 +198,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = false,
+                CreateQueueOrTopicIfItDoesNotExist = false,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -210,7 +210,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = _topicName,
-                SourceType = QueueOrSubscription.Subscription,
+                SourceType = QueueOrTopic.Topic,
                 SubscriptionName = _subName
             };
 
@@ -224,14 +224,14 @@ namespace Frends.ServiceBus.Read.Test
         /// Create and read message from a new queue. Checking that new queue exists and content matches with sent message.
         /// </summary>
         [TestMethod]
-        public async Task Queue_UTF8_CreateQueueOrSubscriptionIfItDoesNotExist_True_Read_Test()
+        public async Task Queue_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_Read_Test()
         {
             await Create();
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -243,7 +243,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestQueue",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -258,7 +258,7 @@ namespace Frends.ServiceBus.Read.Test
         /// Create and read message from a subscription. Checking that new topic and subscription exists and content matches with sent message.
         /// </summary>
         [TestMethod]
-        public async Task SubscriptionAndTopic_UTF8_CreateQueueOrSubscriptionIfItDoesNotExist_True_Read_Test()
+        public async Task SubscriptionAndTopic_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_Read_Test()
         {
             await Create();
 
@@ -266,7 +266,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -278,7 +278,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestTopic",
-                SourceType = QueueOrSubscription.Subscription,
+                SourceType = QueueOrTopic.Topic,
                 SubscriptionName = "NewTestSub"
             };
 
@@ -293,7 +293,7 @@ namespace Frends.ServiceBus.Read.Test
         /// Create and read message from a subscription. Checking that new subscription exists and content matches with sent message.
         /// </summary>
         [TestMethod]
-        public async Task Subscription_UTF8_CreateQueueOrSubscriptionIfItDoesNotExist_True_Read_Test()
+        public async Task Subscription_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_Read_Test()
         {
             await Create();
 
@@ -301,7 +301,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -313,7 +313,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = _topicName,
-                SourceType = QueueOrSubscription.Subscription,
+                SourceType = QueueOrTopic.Topic,
                 SubscriptionName = "AnotherTestSub"
             };
 
@@ -328,13 +328,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Making sure that AutoDelete options works as expected. AutoDeleteOnIdle can't be under 5mins so 4 should be modified to 5. Check must be handled via Azure portal while debuging for now.
         /// </summary>
         [TestMethod]
-        public async Task Queue_CreateQueueOrSubscriptionIfItDoesNotExist_True_TimeFormat_Minutes_Test()
+        public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Minutes_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 4,
@@ -346,7 +346,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestQueue",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -358,13 +358,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Making sure that AutoDelete options works as expected. AutoDeleteOnIdle can't be under 5mins so 4 should be modified to 5. Check must be handled via Azure portal while debuging for now.
         /// </summary>
         [TestMethod]
-        public async Task Queue_CreateQueueOrSubscriptionIfItDoesNotExist_True_TimeFormat_MinutesToHour_Test()
+        public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_MinutesToHour_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 61,
@@ -376,7 +376,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestQueue",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -388,13 +388,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debuging for now.
         /// </summary>
         [TestMethod]
-        public async Task Queue_CreateQueueOrSubscriptionIfItDoesNotExist_True_TimeFormat_Hours_Test()
+        public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Hours_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -406,7 +406,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestQueue",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -418,13 +418,13 @@ namespace Frends.ServiceBus.Read.Test
         /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debuging for now.
         /// </summary>
         [TestMethod]
-        public async Task Queue_CreateQueueOrSubscriptionIfItDoesNotExist_True_TimeFormat_Days_Test()
+        public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Days_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 5,
@@ -436,7 +436,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestQueue",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -449,13 +449,13 @@ namespace Frends.ServiceBus.Read.Test
         /// AutoDeleteOnIdle=0 = Never
         /// </summary>
         [TestMethod]
-        public async Task Queue_CreateQueueOrSubscriptionIfItDoesNotExist_True_TimeFormat_Never_Test()
+        public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Never_Test()
         {
             options = new Options()
             {
                 BodySerializationType = BodySerializationType.String,
                 DefaultEncoding = MessageEncoding.UTF8,
-                CreateQueueOrSubscriptionIfItDoesNotExist = true,
+                CreateQueueOrTopicIfItDoesNotExist = true,
                 UseCachedConnection = false,
                 TimeoutSeconds = 10,
                 AutoDeleteOnIdle = 0,
@@ -467,7 +467,7 @@ namespace Frends.ServiceBus.Read.Test
             {
                 ConnectionString = _connectionString,
                 QueueOrTopicName = "NewTestQueue",
-                SourceType = QueueOrSubscription.Queue,
+                SourceType = QueueOrTopic.Queue,
                 SubscriptionName = null
             };
 
@@ -487,7 +487,7 @@ namespace Frends.ServiceBus.Read.Test
 
             try
             {
-                if (options.CreateQueueOrSubscriptionIfItDoesNotExist)
+                if (options.CreateQueueOrTopicIfItDoesNotExist)
                 {
                     var deleteIdle = TimeSpan.Zero;
 
@@ -507,11 +507,11 @@ namespace Frends.ServiceBus.Read.Test
 
                     switch (input.SourceType)
                     {
-                        case QueueOrSubscription.Queue:
+                        case QueueOrTopic.Queue:
                             if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("QueueOrTopicName and ConnectionString required.");
                             await EnsureQueueExists(input.QueueOrTopicName, input.ConnectionString, deleteIdle, options.MaxSize, cancellationToken);
                             break;
-                        case QueueOrSubscription.Subscription:
+                        case QueueOrTopic.Topic:
                             if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.SubscriptionName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("QueueOrTopicName, SubscriptionName and ConnectionString required.");
                             await EnsureTopicExists(input.ConnectionString, input.QueueOrTopicName, input.SubscriptionName, deleteIdle, options.MaxSize, cancellationToken);
                             break;

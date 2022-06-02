@@ -41,21 +41,21 @@ public class Options
     /// </summary>
     /// <example>False</example>
     [DefaultValue(false)]
-    public bool CreateQueueOrSubscriptionIfItDoesNotExist { get; set; }
+    public bool CreateQueueOrTopicIfItDoesNotExist { get; set; }
 
     /// <summary>
-    /// Idle interval after which the queue/topic/subscription is automatically deleted. See TimeFormat to select Minutes/Hours/Days/Never. The minimum duration is 5 minutes and contains converter e.g. 61 minutes = 1 hour 1 minute.
+    /// Idle interval after which the queue or topic+subscription is automatically deleted. See TimeFormat to select Minutes/Hours/Days/Never. The minimum duration is 5 minutes and contains converter e.g. 61 minutes = 1 hour 1 minute.
     /// </summary>
     /// <example>5</example>
-    [UIHint(nameof(CreateQueueOrSubscriptionIfItDoesNotExist), "", true)]
+    [UIHint(nameof(CreateQueueOrTopicIfItDoesNotExist), "", true)]
     [DefaultValue("5")]
     public int AutoDeleteOnIdle { get; set; }
 
     /// <summary>
-    /// Timeformat for AutoDeleteSubscriptionOnIdle.
+    /// Timeformat for AutoDeleteOnIdle.
     /// </summary>
     /// <example>Minutes/Hours/Days/Never</example>
-    [UIHint(nameof(CreateQueueOrSubscriptionIfItDoesNotExist), "", true)]
+    [UIHint(nameof(CreateQueueOrTopicIfItDoesNotExist), "", true)]
     [DefaultValue(TimeFormat.Minutes)]
     public TimeFormat TimeFormat { get; set; }
 
@@ -63,7 +63,7 @@ public class Options
     /// The maximum size of the queue/topic in megabytes. Default value is 1024.
     /// </summary>
     /// <example>1024</example>
-    [UIHint(nameof(CreateQueueOrSubscriptionIfItDoesNotExist), "", true)]
+    [UIHint(nameof(CreateQueueOrTopicIfItDoesNotExist), "", true)]
     [DefaultValue(1024)]
     public int MaxSize { get; set; }
 }

@@ -56,18 +56,18 @@ public enum BodySerializationType
 }
 
 /// <summary>
-/// Is the message source a queue or a subscription
+/// Is the message source a queue or a topic
 /// </summary>
-public enum QueueOrSubscription
+public enum QueueOrTopic
 {
     /// <summary>
     /// A queue
     /// </summary>
     Queue,
     /// <summary>
-    /// A subscription
+    /// A topic
     /// </summary>
-    Subscription
+    Topic
 }
 
 /// <summary>

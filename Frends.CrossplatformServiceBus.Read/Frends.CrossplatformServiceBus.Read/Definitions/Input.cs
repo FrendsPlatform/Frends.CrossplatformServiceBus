@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Frends.ServiceBus.Read.Definitions;
+namespace Frends.CrossplatformServiceBus.Read.Definitions;
 
 /// <summary>
 /// Input parameters.
@@ -31,7 +31,7 @@ public class Input
     public string SubscriptionName { get; set; }
 
     /// <summary>
-    /// ServiceBus connection string
+    /// Service Bus connection string
     /// </summary>
     /// <example>"Endpoint=sb://[namespace].servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=[secret]</example>
     [DefaultValue("\"Endpoint=sb://[namespace].servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=[secret]\"")]

@@ -12,7 +12,7 @@
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<Description>Frends tasks for Service Bus reading.</Description>
 	<PackageProjectUrl>https://frends.com/</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/FrendsPlatform/Frends.ServiceBus</RepositoryUrl>
+	<RepositoryUrl>https://github.com/FrendsPlatform/Frends.CrossplatformServiceBus</RepositoryUrl>
   </PropertyGroup>
 	
   <ItemGroup>

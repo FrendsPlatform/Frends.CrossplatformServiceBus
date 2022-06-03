@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Azure.ServiceBus.Core;
 
-namespace Frends.ServiceBus.Read.Definitions;
+namespace Frends.CrossplatformServiceBus.Read.Definitions;
 
 /// <summary>
 /// Class handles clients for the service bus. Enables cached connections to the service bus.
@@ -58,7 +58,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
 
     private ServiceBusConnection GetCachedMessagingFactory(string connectionString, TimeSpan timeout)
     {
-        string key = timeout.TotalSeconds + "-" + connectionString;
+        var key = $"{timeout.TotalSeconds}-{connectionString}";
 
         if (!_connections.ContainsKey(key))
         {
@@ -125,7 +125,9 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     }
 
     // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-    /// <summary>Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.</summary>
+    // <summary>
+    // Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
+    // </summary>
     //~ServiceBusMessagingFactory()
     //{
     //    // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

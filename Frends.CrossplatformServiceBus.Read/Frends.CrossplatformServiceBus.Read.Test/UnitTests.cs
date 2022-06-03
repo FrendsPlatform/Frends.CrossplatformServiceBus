@@ -1,4 +1,4 @@
-using Frends.ServiceBus.Read.Definitions;
+using Frends.CrossplatformServiceBus.Read.Definitions;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Azure.ServiceBus.InteropExtensions;
@@ -7,7 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Frends.ServiceBus.Read.Test
+namespace Frends.CrossplatformServiceBus.Read.Test
 {
     [TestClass]
     public class UnitTests
@@ -59,7 +59,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
+            var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await CrossplatformServiceBus.Read(input, options, default)).Result;
             Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
         }
 
@@ -88,7 +88,7 @@ namespace Frends.ServiceBus.Read.Test
                 SourceType = QueueOrTopic.Topic,
                 SubscriptionName = _subName
             };
-            var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
+            var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await CrossplatformServiceBus.Read(input, options, default)).Result;
             Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
         }
 
@@ -117,7 +117,7 @@ namespace Frends.ServiceBus.Read.Test
                 SourceType = QueueOrTopic.Topic,
                 SubscriptionName = "DoesntExists"
             };
-            var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
+            var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await CrossplatformServiceBus.Read(input, options, default)).Result;
             Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
         }
 
@@ -148,7 +148,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            var ex = Assert.ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Read(input, options, default)).Result;
+            var ex = Assert.ThrowsExceptionAsync<UnauthorizedException>(async () => await CrossplatformServiceBus.Read(input, options, default)).Result;
             Assert.IsTrue(ex.Message.Contains("Authorization failed for specified action: Manage,EntityWrite"));
         }
 
@@ -182,8 +182,8 @@ namespace Frends.ServiceBus.Read.Test
 
             var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
-            var result = await ServiceBus.Read(input, options, default);
-            Assert.IsTrue(result.Results.Content.Contains(data) && result.Results.Properties.Count == 2);
+            var result = await CrossplatformServiceBus.Read(input, options, default);
+            Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
         }
 
         /// <summary>
@@ -216,8 +216,8 @@ namespace Frends.ServiceBus.Read.Test
 
             var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
-            var result = await ServiceBus.Read(input, options, default);
-            Assert.IsTrue(result.Results.Content.Contains(data) && result.Results.Properties.Count == 2);
+            var result = await CrossplatformServiceBus.Read(input, options, default);
+            Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
         }
 
         /// <summary>
@@ -249,9 +249,9 @@ namespace Frends.ServiceBus.Read.Test
 
             var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
-            var result = await ServiceBus.Read(input, options, default);
+            var result = await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
-            Assert.IsTrue(result.Results.Content.Contains(data) && result.Results.Properties.Count == 2);
+            Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
         }
 
         /// <summary>
@@ -284,9 +284,9 @@ namespace Frends.ServiceBus.Read.Test
 
             var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
-            var result = await ServiceBus.Read(input, options, default);
+            var result = await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
-            Assert.IsTrue(result.Results.Content.Contains(data) && result.Results.Properties.Count == 2);
+            Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
         }
 
         /// <summary>
@@ -319,9 +319,9 @@ namespace Frends.ServiceBus.Read.Test
 
             var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
-            var result = await ServiceBus.Read(input, options, default);
+            var result = await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists("subscription", _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
-            Assert.IsTrue(result.Results.Content.Contains(data) && result.Results.Properties.Count == 2);
+            Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            await ServiceBus.Read(input, options, default);
+            await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
         }
 
@@ -380,7 +380,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            await ServiceBus.Read(input, options, default);
+            await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
         }
 
@@ -410,7 +410,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            await ServiceBus.Read(input, options, default);
+            await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
         }
 
@@ -440,7 +440,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            await ServiceBus.Read(input, options, default);
+            await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
         }
 
@@ -471,7 +471,7 @@ namespace Frends.ServiceBus.Read.Test
                 SubscriptionName = null
             };
 
-            await ServiceBus.Read(input, options, default);
+            await CrossplatformServiceBus.Read(input, options, default);
             Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
         }
 
@@ -528,7 +528,8 @@ namespace Frends.ServiceBus.Read.Test
                 var data = new string(Enumerable.Repeat(chars, 20)
                     .Select(s => s[random.Next(s.Length)]).ToArray());
 
-                byte[] body = CreateBody(options, data);
+                var createBody = CreateBody(options, data);
+                byte[]? body = createBody != null ? CreateBody(options, data) : null;
 
                 var message = new Message(body);
                 message.MessageId = Guid.NewGuid().ToString();
@@ -608,19 +609,21 @@ namespace Frends.ServiceBus.Read.Test
             }
         }
 
-        private static byte[] CreateBody(Options options, string data)
+        private static byte[]? CreateBody(Options options, string data)
         {
             var contentTypeString = "text/plain; charset=UTF-8";
             var encoding = GetEncodingFromContentType(contentTypeString, Encoding.UTF8);
 
-            // This format matches the older Frends.ServiceBus format to ensure interoperability
+            // This format matches the older Frends.CrossplatformServiceBus format to ensure interoperability
             switch (options.BodySerializationType)
             {
                 case BodySerializationType.String:
-                    return SerializeObject<string>(data);
+                    var stringResult = SerializeObject<string>(data);
+                    return stringResult ?? null;
 
                 case BodySerializationType.ByteArray:
-                    return SerializeObject<byte[]>(encoding.GetBytes(data));
+                    var byteResult = SerializeObject<byte[]>(encoding.GetBytes(data));
+                    return byteResult ?? null;
 
                 case BodySerializationType.Stream:
 
@@ -629,7 +632,7 @@ namespace Frends.ServiceBus.Read.Test
             }
         }
 
-        internal static byte[] SerializeObject<T>(object serializableObject)
+        internal static byte[]? SerializeObject<T>(object serializableObject)
         {
             var serializer = DataContractBinarySerializer<T>.Instance;
             if (serializableObject == null)

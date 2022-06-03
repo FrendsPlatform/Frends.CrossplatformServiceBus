@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Frends.ServiceBus.Read.Definitions;
+namespace Frends.CrossplatformServiceBus.Read.Definitions;
 
 /// <summary>
 /// Option parameters 

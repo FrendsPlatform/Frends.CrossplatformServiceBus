@@ -64,7 +64,7 @@ public class CrossplatformServiceBus
             }
         }
 
-        var result = await DoReadOperation(input, options, cancellationToken);
+        var result = await DoReadOperation(input, options);
         return new Result { Results = result };
     }
 
@@ -153,7 +153,7 @@ public class CrossplatformServiceBus
     }
 
 
-    private static async Task<List<ReadResult>> DoReadOperation(Input input, Options options, CancellationToken cancellationToken)
+    private static async Task<List<ReadResult>> DoReadOperation(Input input, Options options)
     {
         ServiceBusConnection connection = null;
         MessageReceiver requestClient = null;

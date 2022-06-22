@@ -65,7 +65,9 @@ public sealed class ServiceBusMessagingFactory : IDisposable
             lock (factoryLock) // TODO: change double check
             {
                 if (!_connections.ContainsKey(key))
+                {
                     _connections.TryAdd(key, CreateConnectionWithTimeout(connectionString, timeout));
+                }
             }
         }
 
@@ -123,14 +125,6 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     }
 
     // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-    // <summary>
-    // Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
-    // </summary>
-    //~ServiceBusMessagingFactory()
-    //{
-    //    // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-    //    //Dispose(false);
-    //}
 
     /// <summary>
     /// Dispose of the MessagingFactory and close all the cached connections
@@ -139,8 +133,6 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     {
         // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         Dispose(true);
-
-        //GC.SuppressFinalize(this);
     }
     #endregion
 

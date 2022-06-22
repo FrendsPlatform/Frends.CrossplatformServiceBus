@@ -491,11 +491,14 @@ public class UnitTests
                     switch (options.TimeFormat)
                     {
                         case TimeFormat.Minutes:
-                            deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5); ; break;
+                            deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5); ; 
+                            break;
                         case TimeFormat.Hours:
-                            deleteIdle = TimeSpan.FromHours(options.AutoDeleteOnIdle); break;
+                            deleteIdle = TimeSpan.FromHours(options.AutoDeleteOnIdle); 
+                            break;
                         case TimeFormat.Days:
-                            deleteIdle = TimeSpan.FromDays(options.AutoDeleteOnIdle); break;
+                            deleteIdle = TimeSpan.FromDays(options.AutoDeleteOnIdle); 
+                            break;
                     }
                 }
 
@@ -619,8 +622,6 @@ public class UnitTests
             case BodySerializationType.ByteArray:
                 var byteResult = SerializeObject<byte[]>(encoding.GetBytes(data));
                 return byteResult ?? null;
-
-            case BodySerializationType.Stream:
 
             default:
                 return encoding.GetBytes(data);

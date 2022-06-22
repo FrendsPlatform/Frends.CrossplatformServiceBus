@@ -1,0 +1,16 @@
+name: Read_release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: FrendsPlatform/FrendsTasks/.github/workflows/release.yml@main
+    with:
+      workdir: Frends.CrossplatformServiceBus.Read
+      env_var_name_1: HIQ_ServiceBus_Manage_CS
+      env_var_name_2: HIQ_ServiceBus_CS
+    secrets:
+      feed_api_key: ${{ secrets.TASKS_FEED_API_KEY }}
+      env_var_value_1: ${{ secrets.HIQ_SERVICEBUS_MANAGE_CS }}
+      env_var_value_2: ${{ secrets.HIQ_SERVICEBUS_CS }}

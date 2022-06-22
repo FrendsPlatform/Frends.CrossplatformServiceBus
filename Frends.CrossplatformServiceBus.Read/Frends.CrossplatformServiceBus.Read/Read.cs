@@ -29,8 +29,6 @@ public class CrossplatformServiceBus
     /// <returns>List { bool receivedMessage, string contentType, Dictionary&lt;string, object&gt; properties, string sessionId, string messageId, string correlationId, string label, int deliveryCount, long enqueuedSequenceNumber, long sequenceNumber, string replyTo, string replyToSessionId, long size, string to, DateTime scheduledEnqueueTimeUtc, string content}</returns>
     public static async Task<Result> Read([PropertyTab] Input input, [PropertyTab] Options options, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         if (options.CreateQueueOrTopicIfItDoesNotExist)
         {
             var deleteIdle = TimeSpan.Zero;
@@ -40,11 +38,14 @@ public class CrossplatformServiceBus
                 switch (options.TimeFormat)
                 {
                     case TimeFormat.Minutes:
-                        deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5) ; break;
+                        deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5);
+                        break;
                     case TimeFormat.Hours:
-                        deleteIdle = options.AutoDeleteOnIdle > 0.0833333333 ? TimeSpan.FromHours(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5); break;
+                        deleteIdle = options.AutoDeleteOnIdle > 0.0833333333 ? TimeSpan.FromHours(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5);
+                        break;
                     case TimeFormat.Days:
-                        deleteIdle = options.AutoDeleteOnIdle > 0.00347222222 ?  TimeSpan.FromDays(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5) ; break;
+                        deleteIdle = options.AutoDeleteOnIdle > 0.00347222222 ? TimeSpan.FromDays(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5);
+                        break;
                 }
             }
 
@@ -75,7 +76,7 @@ public class CrossplatformServiceBus
 
         if (!await manager.QueueExistsAsync(queueOrTopicName, cancellationToken).ConfigureAwait(false))
         {
-            if(deleteIdle == TimeSpan.Zero)
+            if (deleteIdle == TimeSpan.Zero)
             {
                 queueDescription = new QueueDescription(queueOrTopicName)
                 {
@@ -172,13 +173,11 @@ public class CrossplatformServiceBus
                 requestClient = new MessageReceiver(connection, path);
             }
 
-            cancellationToken.ThrowIfCancellationRequested();
             var msg = await requestClient.ReceiveAsync();
 
             if (msg == null)
-            {
                 result.Add(new ReadResult(false));
-            } else
+            else
             {
                 result.Add(new ReadResult(
                     true,
@@ -197,7 +196,7 @@ public class CrossplatformServiceBus
                 msg.To,
                 msg.ScheduledEnqueueTimeUtc,
                 ReadMessageBody(msg, options)
-                    ));
+                ));
             }
             return result;
         }
@@ -267,6 +266,3 @@ public class CrossplatformServiceBus
     }
 
 }
-
-
-

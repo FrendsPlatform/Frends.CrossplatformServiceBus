@@ -65,9 +65,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
             lock (factoryLock) // TODO: change double check
             {
                 if (!_connections.ContainsKey(key))
-                {
                     _connections.TryAdd(key, CreateConnectionWithTimeout(connectionString, timeout));
-                }
             }
         }
 

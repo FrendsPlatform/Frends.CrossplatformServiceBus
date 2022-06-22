@@ -26,9 +26,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
 
     private ServiceBusMessagingFactory()
     {
-
     }
-
 
     /// <summary>
     /// Create message receiver for the given connection string and entity path
@@ -40,7 +38,6 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     public MessageReceiver GetMessageReceiver(string connectionString, string path, TimeSpan timeout)
     {
         var receiver = new MessageReceiver(GetCachedMessagingFactory(connectionString, timeout), path, receiveMode: ReceiveMode.ReceiveAndDelete);
-
         return receiver;
     }
 
@@ -65,12 +62,9 @@ public sealed class ServiceBusMessagingFactory : IDisposable
             lock (factoryLock) // TODO: change double check
             {
                 if (!_connections.ContainsKey(key))
-                {
                     _connections.TryAdd(key, CreateConnectionWithTimeout(connectionString, timeout));
-                }
             }
         }
-
         return _connections[key];
     }
 

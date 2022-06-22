@@ -491,7 +491,7 @@ public class UnitTests
                     switch (options.TimeFormat)
                     {
                         case TimeFormat.Minutes:
-                            deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5); ; 
+                            deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5);
                             break;
                         case TimeFormat.Hours:
                             deleteIdle = TimeSpan.FromHours(options.AutoDeleteOnIdle); 

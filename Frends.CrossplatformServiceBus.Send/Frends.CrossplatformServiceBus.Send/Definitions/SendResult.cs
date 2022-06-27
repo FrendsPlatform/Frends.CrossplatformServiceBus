@@ -1,4 +1,4 @@
-﻿namespace Frends.CrossplatformServiceBus.Definitions.Send;
+﻿namespace Frends.CrossplatformServiceBus.Send.Definitions;
 /// <summary>
 /// Return object
 /// </summary>

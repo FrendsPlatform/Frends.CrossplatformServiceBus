@@ -1,4 +1,4 @@
-using Frends.CrossplatformServiceBus.Definitions.Send;
+using Frends.CrossplatformServiceBus.Send.Definitions;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Management;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

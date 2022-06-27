@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Frends.CrossplatformServiceBus.Definitions.Send;
+using Frends.CrossplatformServiceBus.Send.Definitions;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using System.Text;
@@ -71,7 +71,6 @@ public class CrossplatformServiceBus
     {
         ServiceBusConnection connection = null;
         MessageSender requestClient = null;
-        var minDate = DateTime.MinValue;
         var result = new List<SendResult>();
         
         try
@@ -98,9 +97,7 @@ public class CrossplatformServiceBus
             message.ScheduledEnqueueTimeUtc = options.ScheduledEnqueueTimeUtc.HasValue ? (DateTime)options.ScheduledEnqueueTimeUtc : DateTime.UtcNow;
 
             foreach (var property in input.Properties)
-            {
                 message.UserProperties.Add(property.Name, property.Value);
-            }
 
             await requestClient.SendAsync(message).ConfigureAwait(false);
             result.Add(new SendResult(message.MessageId, message.SessionId, message.ContentType));

@@ -1,4 +1,4 @@
-﻿namespace Frends.CrossplatformServiceBus.Definitions.Send;
+﻿namespace Frends.CrossplatformServiceBus.Send.Definitions;
 
 /// <summary>
 /// How the body of the message should be serialized.

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Frends.CrossplatformServiceBus.Definitions.Send;
+namespace Frends.CrossplatformServiceBus.Send.Definitions;
 
 /// <summary>
 /// Option parameters 

@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Azure.ServiceBus.Core;
 
-namespace Frends.CrossplatformServiceBus.Definitions.Send;
+namespace Frends.CrossplatformServiceBus.Send.Definitions;
 
 /// <summary>
 /// Class handles clients for the service bus. Enables cached connections to the service bus.
@@ -26,19 +26,6 @@ public sealed class ServiceBusMessagingFactory : IDisposable
 
     private ServiceBusMessagingFactory()
     {
-    }
-
-    /// <summary>
-    /// Create message receiver for the given connection string and entity path
-    /// </summary>
-    /// <param name="connectionString">Connection string</param>
-    /// <param name="path">Name of the queue</param>
-    /// <param name="timeout">TimeoutSeconds</param>
-    /// <returns></returns>
-    public MessageReceiver GetMessageReceiver(string connectionString, string path, TimeSpan timeout)
-    {
-        var receiver = new MessageReceiver(GetCachedMessagingFactory(connectionString, timeout), path, receiveMode: ReceiveMode.ReceiveAndDelete);
-        return receiver;
     }
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Frends.CrossplatformServiceBus.Definitions.Send;
+namespace Frends.CrossplatformServiceBus.Send.Definitions;
 
 /// <summary>
 /// Send result.

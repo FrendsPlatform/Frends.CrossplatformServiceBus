@@ -10,7 +10,7 @@
 	<PackageTags>Frends</PackageTags>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<Description>Frends tasks for Service Bus sending.</Description>
+	<Description>Frends task for sending messages to Azure Service Bus queue or topic.</Description>
 	<PackageProjectUrl>https://frends.com/</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/FrendsPlatform/Frends.CrossplatformServiceBus</RepositoryUrl>
   </PropertyGroup>

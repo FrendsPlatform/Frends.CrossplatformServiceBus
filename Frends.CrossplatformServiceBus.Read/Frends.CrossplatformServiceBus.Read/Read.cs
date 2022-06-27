@@ -21,7 +21,7 @@ public class CrossplatformServiceBus
 {
     /// <summary>
     /// Read message from Azure Service Bus queue or topic.
-    /// [Documentation](https://tasks.frends.com/tasks#frends-tasks/Frends.CrossplatformServiceBus.Read
+    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends.CrossplatformServiceBus.Read
     /// </summary>
     /// <param name="input">Input parameters</param>
     /// <param name="options">Options parameters</param>

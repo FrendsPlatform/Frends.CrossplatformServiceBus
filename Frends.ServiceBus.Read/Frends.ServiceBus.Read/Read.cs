@@ -21,7 +21,7 @@ public class ServiceBus
 {
     /// <summary>
     /// Read message from Azure Service Bus queue or topic.
-    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends.ServiceBus.Read
+    /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends.ServiceBus.Read)
     /// </summary>
     /// <param name="input">Input parameters</param>
     /// <param name="options">Options parameters</param>

@@ -34,6 +34,7 @@ public class Input
     /// Service Bus connection string
     /// </summary>
     /// <example>"Endpoint=sb://[namespace].servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=[secret]</example>
+    [PasswordPropertyText]
     [DefaultValue("\"Endpoint=sb://[namespace].servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=[secret]\"")]
     [DisplayFormat(DataFormatString = "Text")]
     public string ConnectionString { get; set; }

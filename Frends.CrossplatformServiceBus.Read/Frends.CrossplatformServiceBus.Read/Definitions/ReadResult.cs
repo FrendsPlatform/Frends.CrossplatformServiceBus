@@ -61,7 +61,6 @@ public class ReadResult
     /// <example>1</example>
     public long SequenceNumber { get; private set; }
 
-
     /// <summary>
     /// The label of the received message
     /// </summary>

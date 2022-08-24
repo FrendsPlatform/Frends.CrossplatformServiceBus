@@ -7,7 +7,7 @@ namespace Frends.CrossplatformServiceBus.Read.Definitions;
 /// Option parameters 
 /// </summary>
 public class Options
-    {
+{
     /// <summary>
     /// Timeout in seconds.
     /// </summary>

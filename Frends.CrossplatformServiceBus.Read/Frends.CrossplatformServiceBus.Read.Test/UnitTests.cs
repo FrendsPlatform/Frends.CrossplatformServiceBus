@@ -494,10 +494,10 @@ public class UnitTests
                             deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5);
                             break;
                         case TimeFormat.Hours:
-                            deleteIdle = TimeSpan.FromHours(options.AutoDeleteOnIdle); 
+                            deleteIdle = TimeSpan.FromHours(options.AutoDeleteOnIdle);
                             break;
                         case TimeFormat.Days:
-                            deleteIdle = TimeSpan.FromDays(options.AutoDeleteOnIdle); 
+                            deleteIdle = TimeSpan.FromDays(options.AutoDeleteOnIdle);
                             break;
                     }
                 }
@@ -705,7 +705,7 @@ public class UnitTests
                 await managementClient.DeleteQueueAsync(queueName).ConfigureAwait(false);
         }
 
-        foreach(var topicName in topicNames)
+        foreach (var topicName in topicNames)
         {
             if (await managementClient.TopicExistsAsync(topicName).ConfigureAwait(false))
                 await managementClient.DeleteTopicAsync(topicName).ConfigureAwait(false);

@@ -152,7 +152,6 @@ public class CrossplatformServiceBus
         }
     }
 
-
     private static async Task<List<ReadResult>> DoReadOperation(Input input, Options options)
     {
         ServiceBusConnection connection = null;
@@ -231,7 +230,6 @@ public class CrossplatformServiceBus
 
     private static Encoding GetEncodingFromContentType(string contentTypeString, MessageEncoding encodingChoice)
     {
-
         Encoding encoding = null;
 
         switch (encodingChoice)
@@ -264,5 +262,4 @@ public class CrossplatformServiceBus
         }
         return encoding;
     }
-
 }

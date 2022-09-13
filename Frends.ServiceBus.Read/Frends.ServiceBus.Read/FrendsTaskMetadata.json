@@ -1,0 +1,7 @@
+{
+  "Tasks": [
+    {
+      "TaskMethod": "Frends.ServiceBus.Read.ServiceBus.Read"
+    }
+  ]
+}

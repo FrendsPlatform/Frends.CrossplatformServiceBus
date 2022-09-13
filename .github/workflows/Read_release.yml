@@ -7,7 +7,7 @@ jobs:
   build:
     uses: FrendsPlatform/FrendsTasks/.github/workflows/release.yml@main
     with:
-      workdir: Frends.CrossplatformServiceBus.Read
+      workdir: Frends.ServiceBus.Read
       env_var_name_1: HIQ_ServiceBus_Manage_CS
       env_var_name_2: HIQ_ServiceBus_CS
     secrets:

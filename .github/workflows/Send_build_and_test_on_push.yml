@@ -5,14 +5,14 @@ on:
     branches-ignore: 
       - main
     paths:
-      - 'Frends.CrossplatformServiceBus.Send/**'
+      - 'Frends.ServiceBus.Send/**'
   workflow_dispatch:
 
 jobs:
   build:
     uses: FrendsPlatform/FrendsTasks/.github/workflows/build_test.yml@main
     with:
-      workdir: Frends.CrossplatformServiceBus.Send
+      workdir: Frends.ServiceBus.Send
       env_var_name_1: HIQ_ServiceBus_Manage_CS
       env_var_name_2: HIQ_ServiceBus_CS
     secrets:

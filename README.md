@@ -1,11 +1,11 @@
-# Frends.CrossplatformServiceBus
+# Frends.ServiceBus
 
 Frends tasks for Azure Service Bus operations.
 
 # Tasks
 
-- [Frends.CrossplatformServiceBus.Read](Frends.CrossplatformServiceBus.Read/README.md)
-- [Frends.CrossplatformServiceBus.Send](Frends.CrossplatformServiceBus.Send/README.md)
+- [Frends.ServiceBus.Read](Frends.ServiceBus.Read/README.md)
+- [Frends.ServiceBus.Send](Frends.ServiceBus.Send/README.md)
 
 # Contributing
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	<TargetFrameworks>net6.0</TargetFrameworks>
-	<Version>1.0.0</Version>
+	<Version>1.1.0</Version>
 	<Authors>Frends</Authors>
 	<Copyright>Frends</Copyright>
 	<Company>Frends</Company>
@@ -12,7 +12,7 @@
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<Description>Frends task for sending messages to Azure Service Bus queue or topic.</Description>
 	<PackageProjectUrl>https://frends.com/</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/FrendsPlatform/Frends.ServiceBus</RepositoryUrl>
+	<RepositoryUrl>https://github.com/FrendsPlatform/Frends.CrossplatformServiceBus/tree/main/Frends.ServiceBus.Send</RepositoryUrl>
   </PropertyGroup>
 	
   <ItemGroup>

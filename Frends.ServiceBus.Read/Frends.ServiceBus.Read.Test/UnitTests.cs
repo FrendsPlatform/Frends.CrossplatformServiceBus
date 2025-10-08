@@ -12,8 +12,8 @@ namespace Frends.ServiceBus.Read.Test;
 [TestClass]
 public class UnitTests
 {
-    private readonly string? _connectionString = Environment.GetEnvironmentVariable("HIQ_ServiceBus_Manage_CS");
-    private readonly string? _connectionStringReadOnly = Environment.GetEnvironmentVariable("HIQ_ServiceBus_CS");
+    private readonly string? _connectionString = Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING");
+    private readonly string? _connectionStringReadOnly = Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING_READONLY");
 
     private readonly string _queueName = "ServiceBus_Read_TestQueue";
     private readonly string _topicName = "ServiceBus_Read_TestTopic";
@@ -54,7 +54,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
+                await ServiceBus.Read(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -83,7 +85,9 @@ public class UnitTests
             SourceType = QueueOrTopic.Topic,
             SubscriptionName = _subName
         };
-        var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
+                await ServiceBus.Read(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -112,7 +116,9 @@ public class UnitTests
             SourceType = QueueOrTopic.Topic,
             SubscriptionName = "DoesntExists"
         };
-        var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Read(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
+                await ServiceBus.Read(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -122,7 +128,6 @@ public class UnitTests
     [TestMethod]
     public void Queue_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_NoAccess_Test()
     {
-
         options = new Options()
         {
             BodySerializationType = BodySerializationType.String,
@@ -143,7 +148,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        var ex = Assert.ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Read(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Read(input, options, default))
+            .Result;
         Assert.IsTrue(ex.Message.Contains("Authorization failed for specified action: Manage,EntityWrite"));
     }
 
@@ -178,7 +185,8 @@ public class UnitTests
         var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
         var result = await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+        Assert.IsTrue(result.Results.Any(x =>
+            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -212,7 +220,8 @@ public class UnitTests
         var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
         var result = await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+        Assert.IsTrue(result.Results.Any(x =>
+            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -245,8 +254,10 @@ public class UnitTests
         var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
         var result = await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
-        Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(result.Results.Any(x =>
+            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -280,8 +291,10 @@ public class UnitTests
         var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
         var result = await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
-        Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(result.Results.Any(x =>
+            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -315,8 +328,10 @@ public class UnitTests
         var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
 
         var result = await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists("subscription", _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
-        Assert.IsTrue(result.Results.Any(x => x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+        Assert.IsTrue(await EnsureNewExists("subscription", _connectionString, input.QueueOrTopicName,
+            input.SubscriptionName, default));
+        Assert.IsTrue(result.Results.Any(x =>
+            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -346,7 +361,8 @@ public class UnitTests
         };
 
         await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
     }
 
     /// <summary>
@@ -376,7 +392,8 @@ public class UnitTests
         };
 
         await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
     }
 
     /// <summary>
@@ -406,7 +423,8 @@ public class UnitTests
         };
 
         await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
     }
 
     /// <summary>
@@ -436,7 +454,8 @@ public class UnitTests
         };
 
         await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
     }
 
     /// <summary>
@@ -467,15 +486,58 @@ public class UnitTests
         };
 
         await ServiceBus.Read(input, options, default);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString, input.QueueOrTopicName, input.SubscriptionName, default));
+        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
+            input.QueueOrTopicName, input.SubscriptionName, default));
+    }
+
+    [TestMethod]
+    public void ReadMessage_SerializationType_String()
+    {
+        var serializer = DataContractBinarySerializer<string>.Instance;
+        using var stream = new MemoryStream();
+        serializer.WriteObject(stream, "foo");
+        var msg = new Message(stream.ToArray());
+        var result = MessageReader.Read(msg, BodySerializationType.String, MessageEncoding.UTF8);
+        Assert.AreEqual(result, "foo");
+    }
+
+    [TestMethod]
+    public void ReadMessage_SerializationType_Stream()
+    {
+        var bytes = Encoding.UTF8.GetBytes("foo");
+        var msg = new Message(bytes)
+        {
+            ContentType = "text/plain; charset=ascii"
+        };
+
+        var result = MessageReader.Read(msg, BodySerializationType.Stream, MessageEncoding.ASCII);
+        Assert.AreEqual("foo", result);
+    }
+
+    [TestMethod]
+    public void ReadMessage_SerializationType_ByteArray()
+    {
+        var textInBytes = Encoding.UTF8.GetBytes("foo");
+        var serializer = DataContractBinarySerializer<byte[]>.Instance;
+        using var stream = new MemoryStream();
+        serializer.WriteObject(stream, textInBytes);
+        var msg = new Message(stream.ToArray())
+        {
+            ContentType = "text/plain; charset=utf-8"
+        };
+
+        var result = MessageReader.Read(msg, BodySerializationType.ByteArray, MessageEncoding.UTF8);
+        Assert.AreEqual("foo", result);
     }
 
     #region Send test message
+
     /// <summary>
     /// Send test message.
     /// </summary>
     /// <returns></returns>
-    private static async Task<string> Send(Input input, Options options, TimeSpan timeout, CancellationToken cancellationToken)
+    private static async Task<string> Send(Input input, Options options, TimeSpan timeout,
+        CancellationToken cancellationToken)
     {
         ServiceBusConnection? connection = null;
         MessageSender? requestClient = null;
@@ -491,7 +553,9 @@ public class UnitTests
                     switch (options.TimeFormat)
                     {
                         case TimeFormat.Minutes:
-                            deleteIdle = options.AutoDeleteOnIdle > 5 ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle) : TimeSpan.FromMinutes(5);
+                            deleteIdle = options.AutoDeleteOnIdle > 5
+                                ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle)
+                                : TimeSpan.FromMinutes(5);
                             break;
                         case TimeFormat.Hours:
                             deleteIdle = TimeSpan.FromHours(options.AutoDeleteOnIdle);
@@ -506,19 +570,28 @@ public class UnitTests
                 switch (input.SourceType)
                 {
                     case QueueOrTopic.Queue:
-                        if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("QueueOrTopicName and ConnectionString required.");
-                        await EnsureQueueExists(input.QueueOrTopicName, input.ConnectionString, deleteIdle, options.MaxSize, cancellationToken);
+                        if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) ||
+                            string.IsNullOrWhiteSpace(input.ConnectionString))
+                            throw new Exception("QueueOrTopicName and ConnectionString required.");
+                        await EnsureQueueExists(input.QueueOrTopicName, input.ConnectionString, deleteIdle,
+                            options.MaxSize, cancellationToken);
                         break;
                     case QueueOrTopic.Topic:
-                        if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) || string.IsNullOrWhiteSpace(input.SubscriptionName) || string.IsNullOrWhiteSpace(input.ConnectionString)) throw new Exception("QueueOrTopicName, SubscriptionName and ConnectionString required.");
-                        await EnsureTopicExists(input.ConnectionString, input.QueueOrTopicName, input.SubscriptionName, deleteIdle, options.MaxSize, cancellationToken);
+                        if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) ||
+                            string.IsNullOrWhiteSpace(input.SubscriptionName) ||
+                            string.IsNullOrWhiteSpace(input.ConnectionString))
+                            throw new Exception("QueueOrTopicName, SubscriptionName and ConnectionString required.");
+                        await EnsureTopicExists(input.ConnectionString, input.QueueOrTopicName, input.SubscriptionName,
+                            deleteIdle, options.MaxSize, cancellationToken);
                         break;
                     default:
                         throw new Exception($"Unexpected destination type: {input.SourceType}");
                 }
             }
 
-            requestClient = ServiceBusMessagingFactory.Instance.GetMessageSender(input.ConnectionString, input.QueueOrTopicName, timeout);
+            requestClient =
+                ServiceBusMessagingFactory.Instance.GetMessageSender(input.ConnectionString, input.QueueOrTopicName,
+                    timeout);
 
             //Create random data to make sure the correct message is picked up.
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -548,7 +621,10 @@ public class UnitTests
 
             return data;
         }
-        catch (Exception ex) { throw new Exception(ex.ToString()); }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.ToString());
+        }
         finally
         {
             await (requestClient?.CloseAsync() ?? Task.CompletedTask);
@@ -556,7 +632,8 @@ public class UnitTests
         }
     }
 
-    private static async Task EnsureQueueExists(string queueOrTopicName, string connectionString, TimeSpan deleteIdle, int MaxSize, CancellationToken cancellationToken)
+    private static async Task EnsureQueueExists(string queueOrTopicName, string connectionString, TimeSpan deleteIdle,
+        int MaxSize, CancellationToken cancellationToken)
     {
         var manager = new ManagementClient(connectionString);
 
@@ -573,7 +650,8 @@ public class UnitTests
         }
     }
 
-    private static async Task EnsureTopicExists(string connectionString, string queueOrTopicName, string subscriptionName, TimeSpan deleteIdle, int maxSize, CancellationToken cancellationToken)
+    private static async Task EnsureTopicExists(string connectionString, string queueOrTopicName,
+        string subscriptionName, TimeSpan deleteIdle, int maxSize, CancellationToken cancellationToken)
     {
         var managementClient = new ManagementClient(connectionString);
 
@@ -584,19 +662,21 @@ public class UnitTests
                 EnableBatchedOperations = true,
                 MaxSizeInMB = maxSize,
                 AutoDeleteOnIdle = deleteIdle,
-
             };
             await managementClient.CreateTopicAsync(topicDescription, cancellationToken).ConfigureAwait(false);
         }
 
-        await EnsureSubscriptionExists(queueOrTopicName, subscriptionName, connectionString, deleteIdle, cancellationToken);
+        await EnsureSubscriptionExists(queueOrTopicName, subscriptionName, connectionString, deleteIdle,
+            cancellationToken);
     }
 
-    private static async Task EnsureSubscriptionExists(string queueOrTopicName, string subscriptionName, string connectionString, TimeSpan deleteIdle, CancellationToken cancellationToken)
+    private static async Task EnsureSubscriptionExists(string queueOrTopicName, string subscriptionName,
+        string connectionString, TimeSpan deleteIdle, CancellationToken cancellationToken)
     {
         var manager = new ManagementClient(connectionString);
 
-        if (!await manager.SubscriptionExistsAsync(queueOrTopicName, subscriptionName, cancellationToken).ConfigureAwait(false))
+        if (!await manager.SubscriptionExistsAsync(queueOrTopicName, subscriptionName, cancellationToken)
+                .ConfigureAwait(false))
         {
             var subscriptionDescription = new SubscriptionDescription(queueOrTopicName, subscriptionName)
             {
@@ -650,11 +730,14 @@ public class UnitTests
             if (!string.IsNullOrEmpty(contentType.CharSet))
                 encoding = Encoding.GetEncoding(contentType.CharSet);
         }
+
         return encoding;
     }
+
     #endregion Send test message
 
-    private static async Task<bool> EnsureNewExists(string sourceType, string? connectionString, string queueOrTopicName, string? subscriptionName, CancellationToken cancellationToken)
+    private static async Task<bool> EnsureNewExists(string sourceType, string? connectionString,
+        string queueOrTopicName, string? subscriptionName, CancellationToken cancellationToken)
     {
         var managementClient = new ManagementClient(connectionString);
 
@@ -669,11 +752,11 @@ public class UnitTests
                     return true;
                 break;
             case "subscription":
-                if (await managementClient.SubscriptionExistsAsync(queueOrTopicName, subscriptionName, cancellationToken).ConfigureAwait(false))
+                if (await managementClient
+                        .SubscriptionExistsAsync(queueOrTopicName, subscriptionName, cancellationToken)
+                        .ConfigureAwait(false))
                     return true;
                 break;
-            default:
-                return false;
         }
 
         return false;

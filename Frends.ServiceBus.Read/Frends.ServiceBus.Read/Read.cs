@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 using Frends.ServiceBus.Read.Definitions;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
-using System.Text;
 using Microsoft.Azure.ServiceBus.Management;
-using Microsoft.Azure.ServiceBus.InteropExtensions;
-using System.Net.Mime;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -17,7 +14,7 @@ namespace Frends.ServiceBus.Read;
 /// <summary>
 /// Azure Service Bus task.
 /// </summary>
-public class ServiceBus
+public static class ServiceBus
 {
     /// <summary>
     /// Read message from Azure Service Bus queue or topic.
@@ -84,29 +81,22 @@ public class ServiceBus
 
 
     private static async Task EnsureQueueExists(string queueOrTopicName, string connectionString, TimeSpan deleteIdle,
-        int MaxSize, CancellationToken cancellationToken)
+        int maxSize, CancellationToken cancellationToken)
     {
         var manager = new ManagementClient(connectionString);
-        QueueDescription queueDescription;
+        var doesQueryExists = await manager.QueueExistsAsync(queueOrTopicName, cancellationToken).ConfigureAwait(false);
 
-        if (!await manager.QueueExistsAsync(queueOrTopicName, cancellationToken).ConfigureAwait(false))
+        if (!doesQueryExists)
         {
-            if (deleteIdle == TimeSpan.Zero)
+            var queueDescription = new QueueDescription(queueOrTopicName)
             {
-                queueDescription = new QueueDescription(queueOrTopicName)
-                {
-                    EnableBatchedOperations = true,
-                    MaxSizeInMB = MaxSize,
-                };
-            }
-            else
+                EnableBatchedOperations = true,
+                MaxSizeInMB = maxSize,
+            };
+
+            if (deleteIdle != TimeSpan.Zero)
             {
-                queueDescription = new QueueDescription(queueOrTopicName)
-                {
-                    EnableBatchedOperations = true,
-                    MaxSizeInMB = MaxSize,
-                    AutoDeleteOnIdle = deleteIdle,
-                };
+                queueDescription.AutoDeleteOnIdle = deleteIdle;
             }
 
             await manager.CreateQueueAsync(queueDescription, cancellationToken).ConfigureAwait(false);
@@ -117,30 +107,15 @@ public class ServiceBus
         string subscriptionName, TimeSpan deleteIdle, int maxSize, CancellationToken cancellationToken)
     {
         var managementClient = new ManagementClient(connectionString);
-        TopicDescription topicDescription;
-
-        if (!await managementClient.TopicExistsAsync(queueOrTopicName, cancellationToken).ConfigureAwait(false))
+        var topic = await managementClient.GetTopicAsync(queueOrTopicName, cancellationToken).ConfigureAwait(false);
+        topic.EnableBatchedOperations = true;
+        topic.MaxSizeInMB = maxSize;
+        if (deleteIdle != TimeSpan.Zero)
         {
-            if (deleteIdle == TimeSpan.Zero)
-            {
-                topicDescription = new TopicDescription(queueOrTopicName)
-                {
-                    EnableBatchedOperations = true,
-                    MaxSizeInMB = maxSize,
-                };
-            }
-            else
-            {
-                topicDescription = new TopicDescription(queueOrTopicName)
-                {
-                    EnableBatchedOperations = true,
-                    MaxSizeInMB = maxSize,
-                    AutoDeleteOnIdle = deleteIdle,
-                };
-            }
-
-            await managementClient.CreateTopicAsync(topicDescription, cancellationToken).ConfigureAwait(false);
+            topic.AutoDeleteOnIdle = deleteIdle;
         }
+
+        await managementClient.UpdateTopicAsync(topic, cancellationToken);
 
         await EnsureSubscriptionExists(queueOrTopicName, subscriptionName, connectionString, deleteIdle,
             cancellationToken);
@@ -150,29 +125,16 @@ public class ServiceBus
         string connectionString, TimeSpan deleteIdle, CancellationToken cancellationToken)
     {
         var manager = new ManagementClient(connectionString);
-        SubscriptionDescription subscriptionDescription;
 
-        if (!await manager.SubscriptionExistsAsync(queueOrTopicName, subscriptionName, cancellationToken)
-                .ConfigureAwait(false))
+        var subscription = await manager.GetSubscriptionAsync(queueOrTopicName, subscriptionName, cancellationToken)
+            .ConfigureAwait(false);
+        subscription.EnableBatchedOperations = true;
+        if (deleteIdle != TimeSpan.Zero)
         {
-            if (deleteIdle == TimeSpan.Zero)
-            {
-                subscriptionDescription = new SubscriptionDescription(queueOrTopicName, subscriptionName)
-                {
-                    EnableBatchedOperations = true,
-                };
-            }
-            else
-            {
-                subscriptionDescription = new SubscriptionDescription(queueOrTopicName, subscriptionName)
-                {
-                    EnableBatchedOperations = true,
-                    AutoDeleteOnIdle = deleteIdle,
-                };
-            }
-
-            await manager.CreateSubscriptionAsync(subscriptionDescription, cancellationToken).ConfigureAwait(false);
+            subscription.AutoDeleteOnIdle = deleteIdle;
         }
+
+        await manager.UpdateSubscriptionAsync(subscription, cancellationToken);
     }
 
     private static async Task<List<ReadResult>> DoReadOperation(Input input, Options options)
@@ -220,7 +182,7 @@ public class ServiceBus
                     msg.Size,
                     msg.To,
                     msg.ScheduledEnqueueTimeUtc,
-                    ReadMessageBody(msg, options)
+                    MessageReader.Read(msg, options.BodySerializationType, options.DefaultEncoding)
                 ));
             }
 
@@ -231,63 +193,5 @@ public class ServiceBus
             await (requestClient?.CloseAsync() ?? Task.CompletedTask);
             await (connection?.CloseAsync() ?? Task.CompletedTask);
         }
-    }
-
-    private static string ReadMessageBody(Message msg, Options options)
-    {
-        if (options.BodySerializationType == BodySerializationType.String)
-            return msg.GetBody<string>();
-
-        Encoding encoding = GetEncodingFromContentType(msg.ContentType, options.DefaultEncoding);
-
-        if (options.BodySerializationType == BodySerializationType.ByteArray)
-        {
-            var messageBytes = msg.GetBody<byte[]>();
-            return messageBytes == null ? null : encoding.GetString(messageBytes);
-        }
-
-        if (options.BodySerializationType == BodySerializationType.Stream)
-        {
-            var messageBytes = msg.Body;
-            return messageBytes == null ? null : encoding.GetString(messageBytes);
-        }
-
-        throw new ArgumentException($"Unsupported BodySerializationType: {options.BodySerializationType}");
-    }
-
-    private static Encoding GetEncodingFromContentType(string contentTypeString, MessageEncoding encodingChoice)
-    {
-        Encoding encoding = null;
-
-        switch (encodingChoice)
-        {
-            case MessageEncoding.UTF8:
-                encoding = Encoding.UTF8;
-                break;
-            case MessageEncoding.UTF32:
-                encoding = Encoding.UTF32;
-                break;
-            case MessageEncoding.ASCII:
-                encoding = Encoding.ASCII;
-                break;
-            case MessageEncoding.Unicode:
-                encoding = Encoding.Unicode;
-                break;
-            case MessageEncoding.Latin1:
-                encoding = Encoding.Latin1;
-                break;
-            case MessageEncoding.BigEndianUnicode:
-                encoding = Encoding.BigEndianUnicode;
-                break;
-        }
-
-        if (!string.IsNullOrEmpty(contentTypeString))
-        {
-            var contentType = new ContentType(contentTypeString);
-            if (!string.IsNullOrEmpty(contentType.CharSet))
-                encoding = Encoding.GetEncoding(contentType.CharSet);
-        }
-
-        return encoding;
     }
 }

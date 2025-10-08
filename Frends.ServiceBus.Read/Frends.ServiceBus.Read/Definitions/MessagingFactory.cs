@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Azure.ServiceBus.Core;
 
@@ -89,7 +90,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
 
     #region IDisposable Support
     private bool _disposedValue = false; // To detect redundant calls
-
+    [ExcludeFromCodeCoverage]
     private void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -123,6 +124,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     /// <summary>
     /// Dispose of the MessagingFactory and close all the cached connections
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

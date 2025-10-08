@@ -13,9 +13,9 @@ jobs:
     uses: FrendsPlatform/FrendsTasks/.github/workflows/build_main.yml@main
     with:
       workdir: Frends.ServiceBus.Read
-      env_var_name_1: HIQ_ServiceBus_Manage_CS
-      env_var_name_2: HIQ_ServiceBus_CS
+      env_var_name_1: SERVICEBUS_CONNECTIONSTRING
+      env_var_name_2: SERVICEBUS_CONNECTIONSTRING_READONLY
     secrets:
       badge_service_api_key: ${{ secrets.BADGE_SERVICE_API_KEY }}
-      env_var_value_1: ${{ secrets.HIQ_SERVICEBUS_MANAGE_CS }}
-      env_var_value_2: ${{ secrets.HIQ_SERVICEBUS_CS }}
+      env_var_value_1: ${{ secrets.SERVICEBUS_CONNECTIONSTRING }}
+      env_var_value_2: ${{ secrets.SERVICEBUS_CONNECTIONSTRING_READONLY }}

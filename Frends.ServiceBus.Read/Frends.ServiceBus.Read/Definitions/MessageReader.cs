@@ -18,10 +18,8 @@ public static class MessageReader
     {
         switch (serializationType)
         {
-            case BodySerializationType.String:
-            {
+            case BodySerializationType.String: 
                 return msg.GetBody<string>();
-            }
             case BodySerializationType.ByteArray:
             {
                 var encoding = GetEncodingFromContentType(msg.ContentType, messageEncoding);

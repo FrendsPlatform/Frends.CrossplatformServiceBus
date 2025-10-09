@@ -79,7 +79,9 @@ public class ServiceBus
         }
 
         return new Result
-            { Results = await DoQueueSendOperation(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds)) };
+        {
+            Results = await DoQueueSendOperation(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds))
+        };
     }
 
     private static async Task<List<SendResult>> DoQueueSendOperation(Input input, Options options, TimeSpan timeout)

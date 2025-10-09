@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.Azure.ServiceBus.Core;
 
@@ -12,7 +13,9 @@ namespace Frends.ServiceBus.Send.Definitions;
 /// </summary>
 public sealed class ServiceBusMessagingFactory : IDisposable
 {
-    private static readonly Lazy<ServiceBusMessagingFactory> instanceHolder = new(() => new ServiceBusMessagingFactory());
+    private static readonly Lazy<ServiceBusMessagingFactory> instanceHolder =
+        new(() => new ServiceBusMessagingFactory());
+
     /// <summary>
     /// The ServiceBusMessagingFactory singleton instance
     /// </summary>
@@ -52,6 +55,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
                     _connections.TryAdd(key, CreateConnectionWithTimeout(connectionString, timeout));
             }
         }
+
         return _connections[key];
     }
 
@@ -61,7 +65,8 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     /// <param name="connectionString">Connection string</param>
     /// <param name="operationTimeoutForClients">Operation timeout for clients</param>
     /// <returns>Object that can handle messaging to the service bus</returns>
-    internal static ServiceBusConnection CreateConnectionWithTimeout(string connectionString, TimeSpan operationTimeoutForClients)
+    internal static ServiceBusConnection CreateConnectionWithTimeout(string connectionString,
+        TimeSpan operationTimeoutForClients)
     {
         var connBuilder = new ServiceBusConnectionStringBuilder(connectionString)
         {
@@ -75,8 +80,10 @@ public sealed class ServiceBusMessagingFactory : IDisposable
 
 
     #region IDisposable Support
+
     private bool _disposedValue = false; // To detect redundant calls
 
+    [ExcludeFromCodeCoverage]
     private void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -110,11 +117,12 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     /// <summary>
     /// Dispose of the MessagingFactory and close all the cached connections
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         Dispose(true);
     }
-    #endregion
 
+    #endregion
 }

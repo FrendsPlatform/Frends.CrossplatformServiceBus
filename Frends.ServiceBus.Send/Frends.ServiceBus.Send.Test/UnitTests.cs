@@ -8,8 +8,10 @@ namespace Frends.ServiceBus.Send.Test;
 [TestClass]
 public class UnitTests
 {
-    private readonly string? _connectionString = Environment.GetEnvironmentVariable("HIQ_ServiceBus_Manage_CS");
-    private readonly string? _connectionStringReadOnly = Environment.GetEnvironmentVariable("HIQ_ServiceBus_CS");
+    private readonly string? _connectionString = Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING");
+
+    private readonly string? _connectionStringReadOnly =
+        Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING_READONLY");
 
     private readonly string _queueName = "ServiceBus_Read_TestQueue";
     private readonly string _topicName = "ServiceBus_Read_TestTopic";
@@ -61,7 +63,9 @@ public class UnitTests
             Properties = Array.Empty<MessageProperty>()
         };
 
-        var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Send(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
+                await ServiceBus.Send(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -100,7 +104,9 @@ public class UnitTests
             Data = "test",
             Properties = Array.Empty<MessageProperty>()
         };
-        var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Send(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
+                await ServiceBus.Send(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -139,7 +145,9 @@ public class UnitTests
             Data = "test",
             Properties = Array.Empty<MessageProperty>()
         };
-        var ex = Assert.ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () => await ServiceBus.Send(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
+                await ServiceBus.Send(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -179,7 +187,9 @@ public class UnitTests
             Properties = Array.Empty<MessageProperty>()
         };
 
-        var ex = Assert.ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Send(input, options, default)).Result;
+        var ex = Assert
+            .ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Send(input, options, default))
+            .Result;
         Assert.IsTrue(ex.Message.Contains("Authorization failed for specified action: Manage,EntityWrite"));
     }
 
@@ -219,7 +229,7 @@ public class UnitTests
             Properties = Array.Empty<MessageProperty>()
         };
 
-        var result = await  ServiceBus.Send(input, options, default);
+        var result = await ServiceBus.Send(input, options, default);
         Assert.IsTrue(result.Results.Any(x => x.MessageId != null));
     }
 
@@ -516,7 +526,7 @@ public class UnitTests
                 await managementClient.DeleteQueueAsync(queueName).ConfigureAwait(false);
         }
 
-        foreach(var topicName in topicNames)
+        foreach (var topicName in topicNames)
         {
             if (await managementClient.TopicExistsAsync(topicName).ConfigureAwait(false))
                 await managementClient.DeleteTopicAsync(topicName).ConfigureAwait(false);

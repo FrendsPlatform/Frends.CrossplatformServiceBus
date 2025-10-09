@@ -38,7 +38,7 @@ public static class MessageReader
                 throw new ArgumentException($"Unsupported BodySerializationType: {serializationType}");
         }
     }
-    
+
     private static Encoding GetEncodingFromContentType(string contentTypeString, MessageEncoding encodingChoice)
     {
         var encoding = encodingChoice switch
@@ -60,5 +60,4 @@ public static class MessageReader
 
         return encoding;
     }
-    
 }

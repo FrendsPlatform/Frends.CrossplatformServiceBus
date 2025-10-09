@@ -52,7 +52,7 @@ public class Options
     public int AutoDeleteOnIdle { get; set; }
 
     /// <summary>
-    /// Timeformat for AutoDeleteOnIdle.
+    /// Time format for AutoDeleteOnIdle.
     /// </summary>
     /// <example>Minutes/Hours/Days/Never</example>
     [UIHint(nameof(CreateQueueOrTopicIfItDoesNotExist), "", true)]

@@ -1,10 +1,10 @@
+using System.Net.Mime;
+using System.Text;
 using Frends.ServiceBus.Read.Definitions;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Azure.ServiceBus.InteropExtensions;
 using Microsoft.Azure.ServiceBus.Management;
-using System.Net.Mime;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Frends.ServiceBus.Read.Test;
@@ -13,14 +13,16 @@ namespace Frends.ServiceBus.Read.Test;
 public class UnitTests
 {
     private readonly string? _connectionString = Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING");
-    private readonly string? _connectionStringReadOnly = Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING_READONLY");
 
-    private readonly string _queueName = "ServiceBus_Read_TestQueue";
-    private readonly string _topicName = "ServiceBus_Read_TestTopic";
-    private readonly string _subName = "ServiceBus_Read_TestSub";
+    private readonly string? _connectionStringReadOnly =
+        Environment.GetEnvironmentVariable("SERVICEBUS_CONNECTIONSTRING_READONLY");
 
-    Input? input;
-    Options? options;
+    private const string QueueName = "ServiceBus_Read_TestQueue";
+    private const string TopicName = "ServiceBus_Read_TestTopic";
+    private const string SubName = "ServiceBus_Read_TestSub";
+
+    private Input? _input;
+    private Options? _options;
 
     [TestCleanup]
     public async Task CleanUp()
@@ -29,12 +31,12 @@ public class UnitTests
     }
 
     /// <summary>
-    /// Get an error because queue doesn't exists and CreateQueueOrSubscriptionIfItDoesNotExist = false.
+    /// Get an error because queue doesn't exist and CreateQueueOrSubscriptionIfItDoesNotExist = false.
     /// </summary>
     [TestMethod]
     public void Queue_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
     {
-        options = new Options
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -46,7 +48,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input
+        _input = new Input
         {
             ConnectionString = _connectionStringReadOnly,
             QueueOrTopicName = "DoesntExists",
@@ -56,17 +58,17 @@ public class UnitTests
 
         var ex = Assert
             .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
-                await ServiceBus.Read(input, options, CancellationToken.None)).Result;
+                await ServiceBus.Read(_input, _options, CancellationToken.None)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
     /// <summary>
-    /// Get an error because topic doesn't exists and CreateQueueOrSubscriptionIfItDoesNotExist = false.
+    /// Get an error because topic doesn't exist and CreateQueueOrSubscriptionIfItDoesNotExist = false.
     /// </summary>
     [TestMethod]
     public void Topic_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -78,26 +80,26 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "DoesntExists",
             SourceType = QueueOrTopic.Topic,
-            SubscriptionName = _subName
+            SubscriptionName = SubName
         };
         var ex = Assert
             .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
-                await ServiceBus.Read(input, options, CancellationToken.None)).Result;
+                await ServiceBus.Read(_input, _options, CancellationToken.None)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
     /// <summary>
-    /// Get an error because subscription doesn't exists and CreateQueueOrSubscriptionIfItDoesNotExist = false.
+    /// Get an error because subscription doesn't exist and CreateQueueOrSubscriptionIfItDoesNotExist = false.
     /// </summary>
     [TestMethod]
     public void Subscription_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -109,16 +111,16 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
-            QueueOrTopicName = _topicName,
+            QueueOrTopicName = TopicName,
             SourceType = QueueOrTopic.Topic,
             SubscriptionName = "DoesntExists"
         };
         var ex = Assert
             .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
-                await ServiceBus.Read(input, options, CancellationToken.None)).Result;
+                await ServiceBus.Read(_input, _options, CancellationToken.None)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -128,7 +130,7 @@ public class UnitTests
     [TestMethod]
     public void Queue_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_NoAccess_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -140,7 +142,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionStringReadOnly,
             QueueOrTopicName = "GetAnError",
@@ -149,7 +151,8 @@ public class UnitTests
         };
 
         var ex = Assert
-            .ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Read(input, options, CancellationToken.None))
+            .ThrowsExceptionAsync<UnauthorizedException>(async () =>
+                await ServiceBus.Read(_input, _options, CancellationToken.None))
             .Result;
         Assert.IsTrue(ex.Message.Contains("Authorization failed for specified action: Manage,EntityWrite"));
     }
@@ -162,7 +165,7 @@ public class UnitTests
     {
         await Create();
 
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -174,19 +177,19 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
-            QueueOrTopicName = _queueName,
+            QueueOrTopicName = QueueName,
             SourceType = QueueOrTopic.Queue,
             SubscriptionName = null
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
+        var data = await Send(_input, _options, TimeSpan.FromSeconds(_options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, CancellationToken.None);
+        var result = await ServiceBus.Read(_input, _options, CancellationToken.None);
         Assert.IsTrue(result.Results.Any(x =>
-            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+            x.Content.Contains(data) && result.Results.Any(readResult => readResult.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -197,7 +200,7 @@ public class UnitTests
     {
         await Create();
 
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -209,19 +212,19 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
-            QueueOrTopicName = _topicName,
+            QueueOrTopicName = TopicName,
             SourceType = QueueOrTopic.Topic,
-            SubscriptionName = _subName
+            SubscriptionName = SubName
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
+        var data = await Send(_input, _options, TimeSpan.FromSeconds(_options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, CancellationToken.None);
+        var result = await ServiceBus.Read(_input, _options, CancellationToken.None);
         Assert.IsTrue(result.Results.Any(x =>
-            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+            x.Content.Contains(data) && result.Results.Any(readResult => readResult.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -231,7 +234,7 @@ public class UnitTests
     public async Task Queue_UTF8_CreateQueueOrTopicIfItDoesNotExist_True_Read_Test()
     {
         await Create();
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -243,7 +246,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestQueue",
@@ -251,13 +254,13 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
+        var data = await Send(_input, _options, TimeSpan.FromSeconds(_options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        var result = await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
         Assert.IsTrue(result.Results.Any(x =>
-            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+            x.Content.Contains(data) && result.Results.Any(readResult => readResult.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -268,7 +271,7 @@ public class UnitTests
     {
         await Create();
 
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -280,7 +283,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestTopic",
@@ -288,13 +291,13 @@ public class UnitTests
             SubscriptionName = "NewTestSub"
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
+        var data = await Send(_input, _options, TimeSpan.FromSeconds(_options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        var result = await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
         Assert.IsTrue(result.Results.Any(x =>
-            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+            x.Content.Contains(data) && result.Results.Any(readResult => readResult.Properties.Count == 2)));
     }
 
     /// <summary>
@@ -305,7 +308,7 @@ public class UnitTests
     {
         await Create();
 
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -317,30 +320,30 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
-            QueueOrTopicName = _topicName,
+            QueueOrTopicName = TopicName,
             SourceType = QueueOrTopic.Topic,
             SubscriptionName = "AnotherTestSub"
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
+        var data = await Send(_input, _options, TimeSpan.FromSeconds(_options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists("subscription", _connectionString, input.QueueOrTopicName,
-            input.SubscriptionName, CancellationToken.None));
+        var result = await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists("subscription", _connectionString, _input.QueueOrTopicName,
+            _input.SubscriptionName, CancellationToken.None));
         Assert.IsTrue(result.Results.Any(x =>
-            x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
+            x.Content.Contains(data) && result.Results.Any(readResult => readResult.Properties.Count == 2)));
     }
 
     /// <summary>
-    /// Making sure that AutoDelete options works as expected. AutoDeleteOnIdle can't be under 5mins so 4 should be modified to 5. Check must be handled via Azure portal while debuging for now.
+    /// Making sure that AutoDelete options works as expected. AutoDeleteOnIdle can't be under 5mins so 4 should be modified to 5. Check must be handled via Azure portal while debugging for now.
     /// </summary>
     [TestMethod]
     public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Minutes_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -352,7 +355,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestQueue",
@@ -360,18 +363,18 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
-    /// Making sure that AutoDelete options works as expected. AutoDeleteOnIdle can't be under 5mins so 4 should be modified to 5. Check must be handled via Azure portal while debuging for now.
+    /// Making sure that AutoDelete options works as expected. AutoDeleteOnIdle can't be under 5mins so 4 should be modified to 5. Check must be handled via Azure portal while debugging for now.
     /// </summary>
     [TestMethod]
     public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_MinutesToHour_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -383,7 +386,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestQueue",
@@ -391,18 +394,18 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
-    /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debuging for now.
+    /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debugging for now.
     /// </summary>
     [TestMethod]
     public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Hours_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -414,7 +417,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestQueue",
@@ -422,18 +425,18 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
-    /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debuging for now.
+    /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debugging for now.
     /// </summary>
     [TestMethod]
     public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Days_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -445,7 +448,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestQueue",
@@ -453,19 +456,19 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
-    /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debuging for now.
+    /// Making sure that AutoDelete options works as expected. Check must be handled via Azure portal while debugging for now.
     /// AutoDeleteOnIdle=0 = Never
     /// </summary>
     [TestMethod]
     public async Task Queue_CreateQueueOrTopicIfItDoesNotExist_True_TimeFormat_Never_Test()
     {
-        options = new Options()
+        _options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -477,7 +480,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        _input = new Input
         {
             ConnectionString = _connectionString,
             QueueOrTopicName = "NewTestQueue",
@@ -485,9 +488,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, CancellationToken.None);
-        Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
+        await ServiceBus.Read(_input, _options, CancellationToken.None);
+        Assert.IsTrue(await EnsureNewExists(_input.SourceType.ToString().ToLower(), _connectionString,
+            _input.QueueOrTopicName, _input.SubscriptionName, CancellationToken.None));
     }
 
     [TestMethod]
@@ -600,10 +603,12 @@ public class UnitTests
                 .Select(s => s[random.Next(s.Length)]).ToArray());
 
             var createBody = CreateBody(options, data);
-            byte[]? body = createBody != null ? CreateBody(options, data) : null;
+            var body = createBody != null ? CreateBody(options, data) : null;
 
-            var message = new Message(body);
-            message.MessageId = Guid.NewGuid().ToString();
+            var message = new Message(body)
+            {
+                MessageId = Guid.NewGuid().ToString()
+            };
             message.SessionId = message.SessionId;
             message.ContentType = "text/plain; charset=UTF-8";
             message.CorrelationId = null;
@@ -633,7 +638,7 @@ public class UnitTests
     }
 
     private static async Task EnsureQueueExists(string queueOrTopicName, string connectionString, TimeSpan deleteIdle,
-        int MaxSize, CancellationToken cancellationToken)
+        int maxSize, CancellationToken cancellationToken)
     {
         var manager = new ManagementClient(connectionString);
 
@@ -642,7 +647,7 @@ public class UnitTests
             var queueDescription = new QueueDescription(queueOrTopicName)
             {
                 EnableBatchedOperations = true,
-                MaxSizeInMB = MaxSize,
+                MaxSizeInMB = maxSize,
                 AutoDeleteOnIdle = deleteIdle,
             };
 
@@ -703,18 +708,19 @@ public class UnitTests
                 var byteResult = SerializeObject<byte[]>(encoding.GetBytes(data));
                 return byteResult ?? null;
 
+            case BodySerializationType.Stream:
             default:
                 return encoding.GetBytes(data);
         }
     }
 
-    internal static byte[]? SerializeObject<T>(object serializableObject)
+    private static byte[]? SerializeObject<T>(object? serializableObject)
     {
         var serializer = DataContractBinarySerializer<T>.Instance;
         if (serializableObject == null)
             return null;
 
-        using MemoryStream memoryStream = new MemoryStream(256);
+        using var memoryStream = new MemoryStream(256);
         serializer.WriteObject(memoryStream, serializableObject);
         memoryStream.Flush();
         memoryStream.Position = 0L;
@@ -723,13 +729,12 @@ public class UnitTests
 
     private static Encoding GetEncodingFromContentType(string contentTypeString, Encoding defaultEncoding)
     {
-        Encoding encoding = defaultEncoding;
-        if (!string.IsNullOrEmpty(contentTypeString))
-        {
-            var contentType = new ContentType(contentTypeString);
-            if (!string.IsNullOrEmpty(contentType.CharSet))
-                encoding = Encoding.GetEncoding(contentType.CharSet);
-        }
+        var encoding = defaultEncoding;
+        if (string.IsNullOrEmpty(contentTypeString)) return encoding;
+
+        var contentType = new ContentType(contentTypeString);
+        if (!string.IsNullOrEmpty(contentType.CharSet))
+            encoding = Encoding.GetEncoding(contentType.CharSet);
 
         return encoding;
     }
@@ -766,21 +771,21 @@ public class UnitTests
     {
         var managementClient = new ManagementClient(_connectionString);
 
-        if (!await managementClient.QueueExistsAsync(_queueName).ConfigureAwait(false))
-            await managementClient.CreateQueueAsync(_queueName).ConfigureAwait(false);
+        if (!await managementClient.QueueExistsAsync(QueueName).ConfigureAwait(false))
+            await managementClient.CreateQueueAsync(QueueName).ConfigureAwait(false);
 
-        if (!await managementClient.TopicExistsAsync(_topicName).ConfigureAwait(false))
-            await managementClient.CreateTopicAsync(_topicName).ConfigureAwait(false);
+        if (!await managementClient.TopicExistsAsync(TopicName).ConfigureAwait(false))
+            await managementClient.CreateTopicAsync(TopicName).ConfigureAwait(false);
 
-        if (!await managementClient.SubscriptionExistsAsync(_topicName, _subName).ConfigureAwait(false))
-            await managementClient.CreateSubscriptionAsync(_topicName, _subName).ConfigureAwait(false);
+        if (!await managementClient.SubscriptionExistsAsync(TopicName, SubName).ConfigureAwait(false))
+            await managementClient.CreateSubscriptionAsync(TopicName, SubName).ConfigureAwait(false);
     }
 
     private async Task Cleanup()
     {
         var managementClient = new ManagementClient(_connectionString);
-        var queueNames = new List<string> { _queueName, "NewTestQueue" };
-        var topicNames = new List<string> { _topicName, "NewTestTopic" };
+        var queueNames = new List<string> { QueueName, "NewTestQueue" };
+        var topicNames = new List<string> { TopicName, "NewTestTopic" };
 
         foreach (var queueName in queueNames)
         {

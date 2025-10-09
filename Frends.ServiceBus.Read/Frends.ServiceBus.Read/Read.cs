@@ -33,24 +33,19 @@ public static class ServiceBus
 
             if (options.AutoDeleteOnIdle > 0)
             {
-                switch (options.TimeFormat)
+                deleteIdle = options.TimeFormat switch
                 {
-                    case TimeFormat.Minutes:
-                        deleteIdle = options.AutoDeleteOnIdle > 5
-                            ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle)
-                            : TimeSpan.FromMinutes(5);
-                        break;
-                    case TimeFormat.Hours:
-                        deleteIdle = options.AutoDeleteOnIdle > 0.0833333333
-                            ? TimeSpan.FromHours(options.AutoDeleteOnIdle)
-                            : TimeSpan.FromMinutes(5);
-                        break;
-                    case TimeFormat.Days:
-                        deleteIdle = options.AutoDeleteOnIdle > 0.00347222222
-                            ? TimeSpan.FromDays(options.AutoDeleteOnIdle)
-                            : TimeSpan.FromMinutes(5);
-                        break;
-                }
+                    TimeFormat.Minutes => options.AutoDeleteOnIdle > 5
+                        ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle)
+                        : TimeSpan.FromMinutes(5),
+                    TimeFormat.Hours => options.AutoDeleteOnIdle > 0.0833333333
+                        ? TimeSpan.FromHours(options.AutoDeleteOnIdle)
+                        : TimeSpan.FromMinutes(5),
+                    TimeFormat.Days => options.AutoDeleteOnIdle > 0.00347222222
+                        ? TimeSpan.FromDays(options.AutoDeleteOnIdle)
+                        : TimeSpan.FromMinutes(5),
+                    _ => deleteIdle
+                };
             }
 
             switch (input.SourceType)

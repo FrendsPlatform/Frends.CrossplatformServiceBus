@@ -34,7 +34,7 @@ public class UnitTests
     [TestMethod]
     public void Queue_CreateQueueOrTopicIfItDoesNotExist_False_NoExistsError_Test()
     {
-        options = new Options()
+        options = new Options
         {
             BodySerializationType = BodySerializationType.String,
             DefaultEncoding = MessageEncoding.UTF8,
@@ -46,7 +46,7 @@ public class UnitTests
             MaxSize = 1024,
         };
 
-        input = new Input()
+        input = new Input
         {
             ConnectionString = _connectionStringReadOnly,
             QueueOrTopicName = "DoesntExists",
@@ -56,7 +56,7 @@ public class UnitTests
 
         var ex = Assert
             .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
-                await ServiceBus.Read(input, options, default)).Result;
+                await ServiceBus.Read(input, options, CancellationToken.None)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -87,7 +87,7 @@ public class UnitTests
         };
         var ex = Assert
             .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
-                await ServiceBus.Read(input, options, default)).Result;
+                await ServiceBus.Read(input, options, CancellationToken.None)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -118,7 +118,7 @@ public class UnitTests
         };
         var ex = Assert
             .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
-                await ServiceBus.Read(input, options, default)).Result;
+                await ServiceBus.Read(input, options, CancellationToken.None)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
 
@@ -149,7 +149,7 @@ public class UnitTests
         };
 
         var ex = Assert
-            .ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Read(input, options, default))
+            .ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Read(input, options, CancellationToken.None))
             .Result;
         Assert.IsTrue(ex.Message.Contains("Authorization failed for specified action: Manage,EntityWrite"));
     }
@@ -182,9 +182,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
+        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, default);
+        var result = await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(result.Results.Any(x =>
             x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
@@ -217,9 +217,9 @@ public class UnitTests
             SubscriptionName = _subName
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
+        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, default);
+        var result = await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(result.Results.Any(x =>
             x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
@@ -251,11 +251,11 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
+        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, default);
+        var result = await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
         Assert.IsTrue(result.Results.Any(x =>
             x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
@@ -288,11 +288,11 @@ public class UnitTests
             SubscriptionName = "NewTestSub"
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
+        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, default);
+        var result = await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
         Assert.IsTrue(result.Results.Any(x =>
             x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
@@ -325,11 +325,11 @@ public class UnitTests
             SubscriptionName = "AnotherTestSub"
         };
 
-        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), default);
+        var data = await Send(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds), CancellationToken.None);
 
-        var result = await ServiceBus.Read(input, options, default);
+        var result = await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists("subscription", _connectionString, input.QueueOrTopicName,
-            input.SubscriptionName, default));
+            input.SubscriptionName, CancellationToken.None));
         Assert.IsTrue(result.Results.Any(x =>
             x.Content.Contains(data) && result.Results.Any(x => x.Properties.Count == 2)));
     }
@@ -360,9 +360,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, default);
+        await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
@@ -391,9 +391,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, default);
+        await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
@@ -422,9 +422,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, default);
+        await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
@@ -453,9 +453,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, default);
+        await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
     }
 
     /// <summary>
@@ -485,9 +485,9 @@ public class UnitTests
             SubscriptionName = null
         };
 
-        await ServiceBus.Read(input, options, default);
+        await ServiceBus.Read(input, options, CancellationToken.None);
         Assert.IsTrue(await EnsureNewExists(input.SourceType.ToString().ToLower(), _connectionString,
-            input.QueueOrTopicName, input.SubscriptionName, default));
+            input.QueueOrTopicName, input.SubscriptionName, CancellationToken.None));
     }
 
     [TestMethod]
@@ -784,14 +784,14 @@ public class UnitTests
 
         foreach (var queueName in queueNames)
         {
-            if (await managementClient.QueueExistsAsync(queueName).ConfigureAwait(false))
-                await managementClient.DeleteQueueAsync(queueName).ConfigureAwait(false);
+            if (await managementClient.QueueExistsAsync(queueName))
+                await managementClient.DeleteQueueAsync(queueName);
         }
 
         foreach (var topicName in topicNames)
         {
-            if (await managementClient.TopicExistsAsync(topicName).ConfigureAwait(false))
-                await managementClient.DeleteTopicAsync(topicName).ConfigureAwait(false);
+            if (await managementClient.TopicExistsAsync(topicName))
+                await managementClient.DeleteTopicAsync(topicName);
         }
     }
 }

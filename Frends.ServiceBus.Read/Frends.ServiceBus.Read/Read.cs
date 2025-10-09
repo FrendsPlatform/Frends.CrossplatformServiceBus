@@ -84,7 +84,7 @@ public static class ServiceBus
         int maxSize, CancellationToken cancellationToken)
     {
         var manager = new ManagementClient(connectionString);
-        var doesQueryExists = await manager.QueueExistsAsync(queueOrTopicName, cancellationToken).ConfigureAwait(false);
+        var doesQueryExists = await manager.QueueExistsAsync(queueOrTopicName, cancellationToken);
 
         if (!doesQueryExists)
         {
@@ -99,7 +99,7 @@ public static class ServiceBus
                 queueDescription.AutoDeleteOnIdle = deleteIdle;
             }
 
-            await manager.CreateQueueAsync(queueDescription, cancellationToken).ConfigureAwait(false);
+            await manager.CreateQueueAsync(queueDescription, cancellationToken);
         }
     }
 

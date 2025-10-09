@@ -18,20 +18,16 @@ public static class MessageReader
     {
         switch (serializationType)
         {
-            case BodySerializationType.String: 
+            case BodySerializationType.String:
                 return msg.GetBody<string>();
             case BodySerializationType.ByteArray:
-            {
-                var encoding = GetEncodingFromContentType(msg.ContentType, messageEncoding);
-                var messageBytes = msg.GetBody<byte[]>();
-                return messageBytes == null ? null : encoding.GetString(messageBytes);
-            }
+                var byteArrayEncoding = GetEncodingFromContentType(msg.ContentType, messageEncoding);
+                var messageBytesArray = msg.GetBody<byte[]>();
+                return messageBytesArray == null ? null : byteArrayEncoding.GetString(messageBytesArray);
             case BodySerializationType.Stream:
-            {
-                var encoding = GetEncodingFromContentType(msg.ContentType, messageEncoding);
-                var messageBytes = msg.Body;
-                return messageBytes == null ? null : encoding.GetString(messageBytes);
-            }
+                var streamEncoding = GetEncodingFromContentType(msg.ContentType, messageEncoding);
+                var messageStreamBytes = msg.Body;
+                return messageStreamBytes == null ? null : streamEncoding.GetString(messageStreamBytes);
             default:
                 throw new ArgumentException($"Unsupported BodySerializationType: {serializationType}");
         }

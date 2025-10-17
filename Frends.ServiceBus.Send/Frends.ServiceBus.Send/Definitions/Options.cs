@@ -35,7 +35,7 @@ public class Options
     /// Message's session identifier. Messages can be filtered according to the session identifier and handled on the same Service Bus broker ensuring delivery order.
     /// </summary>
     /// <example>f580ef61-bd66-4676-b98f-b9804961b339</example>
-    
+
     [DisplayFormat(DataFormatString = "Text")]
     public string SessionId { get; set; }
 

@@ -19,6 +19,7 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     /// <summary>
     /// The ServiceBusMessagingFactory singleton instance
     /// </summary>
+    /// <example>ServiceBusMessagingFactory.Instance</example>
     public static ServiceBusMessagingFactory Instance
     {
         get { return instanceHolder.Value; }

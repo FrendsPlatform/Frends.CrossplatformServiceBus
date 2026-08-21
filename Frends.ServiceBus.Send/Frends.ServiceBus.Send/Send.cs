@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Frends.ServiceBus.Send.Definitions;
+using Frends.ServiceBus.Send.Helpers;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Frends.ServiceBus.Send;
 /// <summary>
 /// Azure Service Bus task.
 /// </summary>
-public class ServiceBus
+public static class ServiceBus
 {
     /// <summary>
     /// Send message to Azure Service Bus queue or topic.
@@ -30,7 +31,9 @@ public class ServiceBus
     public static async Task<Result> Send([PropertyTab] Input input, [PropertyTab] Options options,
         CancellationToken cancellationToken)
     {
-        if (options.CreateQueueOrTopicIfItDoesNotExist)
+        try
+        {
+            if (options.CreateQueueOrTopicIfItDoesNotExist)
         {
             var deleteIdle = TimeSpan.Zero;
 
@@ -80,8 +83,14 @@ public class ServiceBus
 
         return new Result
         {
+            Success = true,
             Results = await DoQueueSendOperation(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds))
         };
+        }
+        catch (Exception ex)
+        {
+            return ex.Handle(options);
+        }
     }
 
     private static async Task<List<SendResult>> DoQueueSendOperation(Input input, Options options, TimeSpan timeout)

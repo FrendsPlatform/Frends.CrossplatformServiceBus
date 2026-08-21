@@ -22,6 +22,6 @@ public class Result
     /// <summary>
     /// Read result.
     /// </summary>
-    /// <example>null</example>
+    /// <example>[{ ReceivedMessage: true, Content: "Hello World", MessageId: "74ac7f11-1d38-4ff6-a28f-ae2333cc49cb", ContentType: "text/plain; charset=UTF-8", DeliveryCount: 1, SequenceNumber: 1 }]</example>
     public List<ReadResult> Results { get; set; }
 }

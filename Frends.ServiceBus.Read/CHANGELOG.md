@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.1.0] - 2026-08-20
+## [1.2.0] - 2026-08-20
 ### Changed
 - Upgraded target framework from net6.0 to net8.0.
 - Added error handling support with ThrowErrorOnFailure and ErrorMessageOnFailure options.

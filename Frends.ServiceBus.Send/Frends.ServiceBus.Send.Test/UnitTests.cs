@@ -64,7 +64,7 @@ public class UnitTests
         };
 
         var ex = Assert
-            .ThrowsExceptionAsync<Exception>(async () =>
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
                 await ServiceBus.Send(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
@@ -105,7 +105,7 @@ public class UnitTests
             Properties = Array.Empty<MessageProperty>()
         };
         var ex = Assert
-            .ThrowsExceptionAsync<Exception>(async () =>
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
                 await ServiceBus.Send(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
@@ -146,7 +146,7 @@ public class UnitTests
             Properties = Array.Empty<MessageProperty>()
         };
         var ex = Assert
-            .ThrowsExceptionAsync<Exception>(async () =>
+            .ThrowsExceptionAsync<MessagingEntityNotFoundException>(async () =>
                 await ServiceBus.Send(input, options, default)).Result;
         Assert.IsTrue(ex.Message.Contains("The messaging entity") && ex.Message.Contains("could not be found."));
     }
@@ -188,7 +188,7 @@ public class UnitTests
         };
 
         var ex = Assert
-            .ThrowsExceptionAsync<Exception>(async () => await ServiceBus.Send(input, options, default))
+            .ThrowsExceptionAsync<UnauthorizedException>(async () => await ServiceBus.Send(input, options, default))
             .Result;
         Assert.IsTrue(ex.Message.Contains("Authorization failed for specified action: Manage,EntityWrite"));
     }

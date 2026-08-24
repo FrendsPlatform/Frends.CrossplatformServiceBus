@@ -77,7 +77,7 @@ public class Options
     /// <summary>
     /// Overrides the error message on failure.
     /// </summary>
-    /// <example>Service Bus read operation failed: unable to read message</example>
+    /// <example>Service Bus read operation failed: unable to read message.</example>
     [DisplayFormat(DataFormatString = "Text")]
     [DefaultValue("")]
     public string ErrorMessageOnFailure { get; set; } = string.Empty;

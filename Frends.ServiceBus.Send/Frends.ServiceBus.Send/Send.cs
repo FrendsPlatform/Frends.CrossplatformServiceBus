@@ -34,58 +34,58 @@ public static class ServiceBus
         try
         {
             if (options.CreateQueueOrTopicIfItDoesNotExist)
-        {
-            var deleteIdle = TimeSpan.Zero;
-
-            if (options.AutoDeleteOnIdle > 0)
             {
-                switch (options.TimeFormat)
+                var deleteIdle = TimeSpan.Zero;
+
+                if (options.AutoDeleteOnIdle > 0)
                 {
-                    case TimeFormat.Minutes:
-                        deleteIdle = options.AutoDeleteOnIdle > 5
-                            ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle)
-                            : TimeSpan.FromMinutes(5);
+                    switch (options.TimeFormat)
+                    {
+                        case TimeFormat.Minutes:
+                            deleteIdle = options.AutoDeleteOnIdle > 5
+                                ? TimeSpan.FromMinutes(options.AutoDeleteOnIdle)
+                                : TimeSpan.FromMinutes(5);
+                            break;
+                        case TimeFormat.Hours:
+                            deleteIdle = options.AutoDeleteOnIdle > 0.0833333333
+                                ? TimeSpan.FromHours(options.AutoDeleteOnIdle)
+                                : TimeSpan.FromMinutes(5);
+                            break;
+                        case TimeFormat.Days:
+                            deleteIdle = options.AutoDeleteOnIdle > 0.00347222222
+                                ? TimeSpan.FromDays(options.AutoDeleteOnIdle)
+                                : TimeSpan.FromMinutes(5);
+                            break;
+                    }
+                }
+
+                switch (input.DestinationType)
+                {
+                    case QueueOrTopic.Queue:
+                        if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) ||
+                            string.IsNullOrWhiteSpace(input.ConnectionString))
+                            throw new Exception("Connection parameters required.");
+                        await EnsureQueueExists(input.QueueOrTopicName, input.ConnectionString, deleteIdle, options.MaxSize,
+                            cancellationToken);
                         break;
-                    case TimeFormat.Hours:
-                        deleteIdle = options.AutoDeleteOnIdle > 0.0833333333
-                            ? TimeSpan.FromHours(options.AutoDeleteOnIdle)
-                            : TimeSpan.FromMinutes(5);
+                    case QueueOrTopic.Topic:
+                        if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) ||
+                            string.IsNullOrWhiteSpace(input.SubscriptionName) ||
+                            string.IsNullOrWhiteSpace(input.ConnectionString))
+                            throw new Exception("Connection parameters required.");
+                        await EnsureTopicExists(input.ConnectionString, input.QueueOrTopicName, input.SubscriptionName,
+                            deleteIdle, options.MaxSize, cancellationToken);
                         break;
-                    case TimeFormat.Days:
-                        deleteIdle = options.AutoDeleteOnIdle > 0.00347222222
-                            ? TimeSpan.FromDays(options.AutoDeleteOnIdle)
-                            : TimeSpan.FromMinutes(5);
-                        break;
+                    default:
+                        throw new Exception($"Unexpected destination type: {input.DestinationType}");
                 }
             }
 
-            switch (input.DestinationType)
+            return new Result
             {
-                case QueueOrTopic.Queue:
-                    if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) ||
-                        string.IsNullOrWhiteSpace(input.ConnectionString))
-                        throw new Exception("Connection parameters required.");
-                    await EnsureQueueExists(input.QueueOrTopicName, input.ConnectionString, deleteIdle, options.MaxSize,
-                        cancellationToken);
-                    break;
-                case QueueOrTopic.Topic:
-                    if (string.IsNullOrWhiteSpace(input.QueueOrTopicName) ||
-                        string.IsNullOrWhiteSpace(input.SubscriptionName) ||
-                        string.IsNullOrWhiteSpace(input.ConnectionString))
-                        throw new Exception("Connection parameters required.");
-                    await EnsureTopicExists(input.ConnectionString, input.QueueOrTopicName, input.SubscriptionName,
-                        deleteIdle, options.MaxSize, cancellationToken);
-                    break;
-                default:
-                    throw new Exception($"Unexpected destination type: {input.DestinationType}");
-            }
-        }
-
-        return new Result
-        {
-            Success = true,
-            Results = await DoQueueSendOperation(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds))
-        };
+                Success = true,
+                Results = await DoQueueSendOperation(input, options, TimeSpan.FromSeconds(options.TimeoutSeconds))
+            };
         }
         catch (Exception ex)
         {

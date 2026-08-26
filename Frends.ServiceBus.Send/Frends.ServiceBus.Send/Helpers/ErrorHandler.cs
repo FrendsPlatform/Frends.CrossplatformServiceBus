@@ -8,6 +8,9 @@ namespace Frends.ServiceBus.Send.Helpers;
 /// </summary>
 internal static class ErrorHandler
 {
+    /// <summary>
+    /// Converts an exception into a failed Result object or rethrows based on task options.
+    /// </summary>
     /// <param name="exception">The exception to handle.</param>
     /// <param name="options">Task options that control whether failures are returned as a Result object or thrown.</param>
     /// <param name="throwCanceled">

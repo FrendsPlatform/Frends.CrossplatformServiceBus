@@ -1,9 +1,17 @@
 ﻿namespace Frends.ServiceBus.Send.Definitions;
+
 /// <summary>
 /// Return object
 /// </summary>
 public class SendResult
 {
+    internal SendResult(string messageId, string sessionId, string contentType)
+    {
+        MessageId = messageId;
+        SessionId = sessionId;
+        ContentType = contentType;
+    }
+
     /// <summary>
     /// The message identifier.
     /// </summary>
@@ -21,11 +29,4 @@ public class SendResult
     /// </summary>
     /// <example>text/plain; charset=UTF-8</example>
     public string ContentType { get; private set; }
-
-    internal SendResult(string messageId, string sessionId, string contentType)
-    {
-        MessageId = messageId;
-        SessionId = sessionId;
-        ContentType = contentType;
-    }
 }

@@ -5,11 +5,20 @@
 /// </summary>
 public enum BodySerializationType
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>
+    /// Serialize as Stream.
+    /// </summary>
     Stream,
+
+    /// <summary>
+    /// Serialize as ByteArray.
+    /// </summary>
     ByteArray,
-    String
-#pragma warning restore CS1591 // self explanatory
+
+    /// <summary>
+    /// Serialize as String.
+    /// </summary>
+    String,
 }
 
 /// <summary>
@@ -17,10 +26,15 @@ public enum BodySerializationType
 /// </summary>
 public enum QueueOrTopic
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>
+    /// Queue.
+    /// </summary>
     Queue,
-    Topic
-#pragma warning restore CS1591 // self explanatory
+
+    /// <summary>
+    /// Topic.
+    /// </summary>
+    Topic,
 }
 
 /// <summary>
@@ -28,9 +42,18 @@ public enum QueueOrTopic
 /// </summary>
 public enum TimeFormat
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>
+    /// Minutes.
+    /// </summary>
     Minutes,
+
+    /// <summary>
+    /// Hours.
+    /// </summary>
     Hours,
+
+    /// <summary>
+    /// Days.
+    /// </summary>
     Days,
-#pragma warning restore CS1591 // self explanatory
 }

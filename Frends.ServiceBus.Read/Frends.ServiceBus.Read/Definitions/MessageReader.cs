@@ -14,6 +14,10 @@ public static class MessageReader
     /// <summary>
     /// Read the message body according to the selected serialization type
     /// </summary>
+    /// <param name="msg">The service bus message to read.</param>
+    /// <param name="serializationType">How the body is serialized.</param>
+    /// <param name="messageEncoding">The encoding to use when deserializing the body.</param>
+    /// <returns>The message body as a string.</returns>
     public static string Read(Message msg, BodySerializationType serializationType, MessageEncoding messageEncoding)
     {
         switch (serializationType)
@@ -43,7 +47,7 @@ public static class MessageReader
             MessageEncoding.Unicode => Encoding.Unicode,
             MessageEncoding.Latin1 => Encoding.Latin1,
             MessageEncoding.BigEndianUnicode => Encoding.BigEndianUnicode,
-            _ => null
+            _ => null,
         };
 
         if (string.IsNullOrEmpty(contentTypeString)) return encoding;

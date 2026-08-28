@@ -2,11 +2,53 @@
 using System.Collections.Generic;
 
 namespace Frends.ServiceBus.Read.Definitions;
+
 /// <summary>
 /// Return object
 /// </summary>
 public class ReadResult
 {
+    internal ReadResult(bool receivedMessage)
+    {
+        ReceivedMessage = receivedMessage;
+    }
+
+    internal ReadResult(
+        bool receivedMessage,
+        string contentType,
+        Dictionary<string, object> properties,
+        string sessionId,
+        string messageId,
+        string correlationId,
+        string label,
+        int deliveryCount,
+        long enqueuedSequenceNumber,
+        long sequenceNumber,
+        string replyTo,
+        string replyToSessionId,
+        long size,
+        string to,
+        DateTime scheduledEnqueueTimeUtc,
+        string content)
+    {
+        ReceivedMessage = receivedMessage;
+        ContentType = contentType;
+        Properties = properties;
+        SessionId = sessionId;
+        MessageId = messageId;
+        CorrelationId = correlationId;
+        Label = label;
+        DeliveryCount = deliveryCount;
+        EnqueuedSequenceNumber = enqueuedSequenceNumber;
+        SequenceNumber = sequenceNumber;
+        ReplyTo = replyTo;
+        ReplyToSessionId = replyToSessionId;
+        Size = size;
+        To = to;
+        ScheduledEnqueueTimeUtc = scheduledEnqueueTimeUtc;
+        Content = content;
+    }
+
     /// <summary>
     /// Did the service bus provide a message
     /// </summary>
@@ -102,29 +144,4 @@ public class ReadResult
     /// </summary>
     /// <example>{1.1.0001 0.00.00}</example>
     public DateTime ScheduledEnqueueTimeUtc { get; private set; }
-
-    internal ReadResult(bool receivedMessage)
-    {
-        ReceivedMessage = receivedMessage;
-    }
-
-    internal ReadResult(bool receivedMessage, string contentType, Dictionary<string, object> properties, string sessionId, string messageId, string correlationId, string label, int deliveryCount, long enqueuedSequenceNumber, long sequenceNumber, string replyTo, string replyToSessionId, long size, string to, DateTime scheduledEnqueueTimeUtc, string content)
-    {
-        ReceivedMessage = receivedMessage;
-        ContentType = contentType;
-        Properties = properties;
-        SessionId = sessionId;
-        MessageId = messageId;
-        CorrelationId = correlationId;
-        Label = label;
-        DeliveryCount = deliveryCount;
-        EnqueuedSequenceNumber = enqueuedSequenceNumber;
-        SequenceNumber = sequenceNumber;
-        ReplyTo = replyTo;
-        ReplyToSessionId = replyToSessionId;
-        Size = size;
-        To = to;
-        ScheduledEnqueueTimeUtc = scheduledEnqueueTimeUtc;
-        Content = content;
-    }
 }

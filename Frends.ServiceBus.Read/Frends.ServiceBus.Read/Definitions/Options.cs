@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Frends.ServiceBus.Read.Definitions;
 
 /// <summary>
-/// Option parameters 
+/// Option parameters
 /// </summary>
 public class Options
 {

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.ExceptionServices;
 using Frends.ServiceBus.Read.Definitions;
 
 namespace Frends.ServiceBus.Read.Helpers;

@@ -1,5 +1,5 @@
-using Azure.Messaging.ServiceBus;
 using Frends.ServiceBus.Read.Definitions;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Frends.ServiceBus.Read.Test;

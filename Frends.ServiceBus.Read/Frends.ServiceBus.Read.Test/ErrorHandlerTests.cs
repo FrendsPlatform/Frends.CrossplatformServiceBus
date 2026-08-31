@@ -42,7 +42,7 @@ public class ErrorHandlerTests
         var options = DefaultOptions();
         options.ThrowErrorOnFailure = true;
 
-        var ex = Assert.ThrowsExceptionAsync<Exception>(async () =>
+        var ex = Assert.ThrowsExceptionAsync<ServiceBusCommunicationException>(async () =>
             await ServiceBus.Read(InvalidInput(), options, CancellationToken.None)).Result;
         Assert.IsNotNull(ex);
     }

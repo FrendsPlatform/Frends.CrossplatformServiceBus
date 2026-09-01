@@ -5,14 +5,23 @@
 /// </summary>
 public enum MessageEncoding
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>UTF-8 encoding.</summary>
     UTF8,
+
+    /// <summary>UTF-32 encoding.</summary>
     UTF32,
+
+    /// <summary>ASCII encoding.</summary>
     ASCII,
+
+    /// <summary>Unicode (UTF-16) encoding.</summary>
     Unicode,
+
+    /// <summary>Latin-1 (ISO-8859-1) encoding.</summary>
     Latin1,
+
+    /// <summary>Big-endian Unicode encoding.</summary>
     BigEndianUnicode,
-#pragma warning restore CS1591 // self explanatory
 }
 
 /// <summary>
@@ -20,11 +29,14 @@ public enum MessageEncoding
 /// </summary>
 public enum BodySerializationType
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>Message body is a raw byte stream.</summary>
     Stream,
+
+    /// <summary>Message body is a byte array.</summary>
     ByteArray,
-    String
-#pragma warning restore CS1591 // self explanatory
+
+    /// <summary>Message body is a string.</summary>
+    String,
 }
 
 /// <summary>
@@ -32,10 +44,11 @@ public enum BodySerializationType
 /// </summary>
 public enum QueueOrTopic
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>Source is a queue.</summary>
     Queue,
-    Topic
-#pragma warning restore CS1591 // self explanatory
+
+    /// <summary>Source is a topic subscription.</summary>
+    Topic,
 }
 
 /// <summary>
@@ -43,9 +56,12 @@ public enum QueueOrTopic
 /// </summary>
 public enum TimeFormat
 {
-#pragma warning disable CS1591 // self explanatory
+    /// <summary>Time unit is minutes.</summary>
     Minutes,
+
+    /// <summary>Time unit is hours.</summary>
     Hours,
+
+    /// <summary>Time unit is days.</summary>
     Days,
-#pragma warning restore CS1591 // self explanatory
 }

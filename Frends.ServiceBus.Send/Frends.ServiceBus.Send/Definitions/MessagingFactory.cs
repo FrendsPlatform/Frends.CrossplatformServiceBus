@@ -1,9 +1,9 @@
-﻿using Microsoft.Azure.ServiceBus;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 
 namespace Frends.ServiceBus.Send.Definitions;
@@ -13,50 +13,48 @@ namespace Frends.ServiceBus.Send.Definitions;
 /// </summary>
 public sealed class ServiceBusMessagingFactory : IDisposable
 {
-    private static readonly Lazy<ServiceBusMessagingFactory> instanceHolder =
+    private static readonly Lazy<ServiceBusMessagingFactory> InstanceHolder =
         new(() => new ServiceBusMessagingFactory());
 
-    /// <summary>
-    /// The ServiceBusMessagingFactory singleton instance
-    /// </summary>
-    public static ServiceBusMessagingFactory Instance
-    {
-        get { return instanceHolder.Value; }
-    }
+    private static readonly object FactoryLock = new();
 
-    private static readonly object factoryLock = new();
-    private readonly ConcurrentDictionary<string, ServiceBusConnection> _connections = new();
+    private readonly ConcurrentDictionary<string, ServiceBusConnection> connections = new();
+
+    private bool disposedValue = false; // To detect redundant calls
 
     private ServiceBusMessagingFactory()
     {
     }
 
     /// <summary>
+    /// The ServiceBusMessagingFactory singleton instance
+    /// </summary>
+    /// <example>ServiceBusMessagingFactory.Instance</example>
+    public static ServiceBusMessagingFactory Instance
+    {
+        get { return InstanceHolder.Value; }
+    }
+
+    /// <summary>
     /// Create a message sender for the given connection string and entity path
     /// </summary>
-    /// <param name="connectionString"></param>
-    /// <param name="path"></param>
-    /// <param name="timeout"></param>
-    /// <returns></returns>
+    /// <param name="connectionString">The connection string for the Service Bus</param>
+    /// <param name="path">The entity path (queue or topic name)</param>
+    /// <param name="timeout">The operation timeout</param>
+    /// <returns>A MessageSender instance for sending messages</returns>
     public MessageSender GetMessageSender(string connectionString, string path, TimeSpan timeout)
     {
         return new MessageSender(GetCachedMessagingFactory(connectionString, timeout), path);
     }
 
-    private ServiceBusConnection GetCachedMessagingFactory(string connectionString, TimeSpan timeout)
+    /// <summary>
+    /// Dispose of the MessagingFactory and close all the cached connections
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    public void Dispose()
     {
-        var key = $"{timeout.TotalSeconds}-{connectionString}";
-
-        if (!_connections.ContainsKey(key))
-        {
-            lock (factoryLock) // TODO: change double check
-            {
-                if (!_connections.ContainsKey(key))
-                    _connections.TryAdd(key, CreateConnectionWithTimeout(connectionString, timeout));
-            }
-        }
-
-        return _connections[key];
+        // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        Dispose(true);
     }
 
     /// <summary>
@@ -65,12 +63,11 @@ public sealed class ServiceBusMessagingFactory : IDisposable
     /// <param name="connectionString">Connection string</param>
     /// <param name="operationTimeoutForClients">Operation timeout for clients</param>
     /// <returns>Object that can handle messaging to the service bus</returns>
-    internal static ServiceBusConnection CreateConnectionWithTimeout(string connectionString,
-        TimeSpan operationTimeoutForClients)
+    internal static ServiceBusConnection CreateConnectionWithTimeout(string connectionString, TimeSpan operationTimeoutForClients)
     {
         var connBuilder = new ServiceBusConnectionStringBuilder(connectionString)
         {
-            OperationTimeout = operationTimeoutForClients
+            OperationTimeout = operationTimeoutForClients,
         };
 
         var connection = new ServiceBusConnection(connBuilder) { RetryPolicy = RetryPolicy.Default };
@@ -78,18 +75,29 @@ public sealed class ServiceBusMessagingFactory : IDisposable
         return connection;
     }
 
+    private ServiceBusConnection GetCachedMessagingFactory(string connectionString, TimeSpan timeout)
+    {
+        var key = $"{timeout.TotalSeconds}-{connectionString}";
 
-    #region IDisposable Support
+        if (!connections.ContainsKey(key))
+        {
+            lock (FactoryLock) // TODO: change double check
+            {
+                if (!connections.ContainsKey(key))
+                    connections.TryAdd(key, CreateConnectionWithTimeout(connectionString, timeout));
+            }
+        }
 
-    private bool _disposedValue = false; // To detect redundant calls
+        return connections[key];
+    }
 
     [ExcludeFromCodeCoverage]
     private void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if (!disposedValue)
         {
-            var factoriesToClose = _connections.ToList();
-            _connections.Clear();
+            var factoriesToClose = connections.ToList();
+            connections.Clear();
 
             if (disposing)
             {
@@ -108,21 +116,9 @@ public sealed class ServiceBusMessagingFactory : IDisposable
                 }
             }
 
-            _disposedValue = true;
+            disposedValue = true;
         }
     }
 
     // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-
-    /// <summary>
-    /// Dispose of the MessagingFactory and close all the cached connections
-    /// </summary>
-    [ExcludeFromCodeCoverage]
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        Dispose(true);
-    }
-
-    #endregion
 }

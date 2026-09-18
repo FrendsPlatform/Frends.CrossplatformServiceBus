@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Frends.ServiceBus.Send.Definitions;
 
 /// <summary>
-/// Option parameters 
+/// Option parameters.
 /// </summary>
 public class Options
 {
@@ -35,7 +35,6 @@ public class Options
     /// Message's session identifier. Messages can be filtered according to the session identifier and handled on the same Service Bus broker ensuring delivery order.
     /// </summary>
     /// <example>f580ef61-bd66-4676-b98f-b9804961b339</example>
-
     [DisplayFormat(DataFormatString = "Text")]
     public string SessionId { get; set; }
 
@@ -124,4 +123,19 @@ public class Options
     /// <example>60</example>
     [DefaultValue(60)]
     public long TimeoutSeconds { get; set; }
+
+    /// <summary>
+    /// Whether to throw an error on failure.
+    /// </summary>
+    /// <example>true</example>
+    [DefaultValue(true)]
+    public bool ThrowErrorOnFailure { get; set; } = true;
+
+    /// <summary>
+    /// Overrides the error message on failure.
+    /// </summary>
+    /// <example>Service Bus send operation failed</example>
+    [DisplayFormat(DataFormatString = "Text")]
+    [DefaultValue("")]
+    public string ErrorMessageOnFailure { get; set; } = string.Empty;
 }
